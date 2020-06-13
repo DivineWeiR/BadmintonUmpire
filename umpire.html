@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/swipe-button.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+    <title>开始比赛</title>
+</head>
+
+<body>
+    <div class="input-container hidden">
+        <div class="input-box">
+            <nav>
+                <button id="cancel_setting"><i class="fa fa-times"></i></button>
+            </nav>
+            <div class="input-wrapper">
+                <div class="bottom-shadow"><i class="fa fa-angle-double-down"></i></div>
+                <div class="input-scroll">
+                    <article class="match-setting hidden">
+                        <h1>比赛设置</h1>
+                        <section class="setting-item">
+                            <h2>比赛类型</h2>
+                            <div class="setting-group">
+                                <div><input type="radio" id="ms" name="game-type" value="ms" checked>
+                                    <label for="ms">男单</label></div>
+                                <div><input type="radio" id="ws" name="game-type" value="ws">
+                                    <label for="ws">女单</label></div>
+                                <div><input type="radio" id="md" name="game-type" value="md">
+                                    <label for="md">男双</label></div>
+                                <div><input type="radio" id="wd" name="game-type" value="wd">
+                                    <label for="wd">女双</label></div>
+                                <div><input type="radio" id="xd" name="game-type" value="xd">
+                                    <label for="xd">混双</label></div>
+                            </div>
+                        </section>
+                        <section class="setting-item">
+                            <h2>比赛局数</h2>
+                            <div class="setting-group">
+                                <div>
+                                    <input type="radio" id="game1" name="game-num" value="1">
+                                    <label for="game1">1局</label></div>
+                                <div><input type="radio" id="game3" name="game-num" value="3" checked>
+                                    <label for="game3">3局</label></div>
+                                <div><input type="radio" id="game5" name="game-num" value="5">
+                                    <label for="game5">5局</label></div>
+                            </div>
+                        </section>
+                        <section class="setting-item">
+                            <h2>每局分数</h2>
+                            <div class="setting-group">
+                                <div><input type="radio" id="score11" name="game-score" value="11">
+                                    <label for="score11">11分</label></div>
+                                <div><input type="radio" id="score15" name="game-score" value="15">
+                                    <label for="score15">15分</label></div>
+                                <div><input type="radio" id="score21" name="game-score" value="21" checked>
+                                    <label for="score11">21分</label></div>
+                                <div><input type="radio" id="score-diy" name="game-score" value="-1">
+                                    <input type="text" name="score-diy-input" id="score-diy-input"
+                                        placeholder="请输入定制比分"></div>
+                            </div>
+                            <div class="setting-group">
+                                <div class="switch-group"><span>两分胜出</span>
+                                    <span class="switch">
+                                        <input class="swipe" type="checkbox" id="two-win-on" name="two-win" value="1"
+                                            checked="true">
+                                        <label for="two-win-on"></label>
+                                    </span>
+                                </div>
+                                <div><label for="max-score">上限</label>
+                                    <input type="text" name="max-score" id="max-score" placeholder="请输入上限分数"></div>
+                            </div>
+                            <div class="setting-group">
+                                <div class="switch-group">
+                                    <span>交换场区</span>
+                                    <span class="switch">
+                                        <input class="swipe" type="checkbox" id="change-end" name="change-end" value="1"
+                                            checked="true">
+                                        <label for="change-end"></label></span>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="setting-item">
+                            <h2>决胜局
+                                <span id="hint-btn">
+                                    <i class="fa fa-question-circle" title="单独设置决胜局规则"></i>
+                                </span>
+                                <span class="hint hidden">为决胜局单独设置规则</span>
+                            </h2>
+                            <div class="setting-group">
+                                <div class="switch-group">
+                                    <div class="switch">
+                                        <input type="checkbox" name="final-game" id="final-game">
+                                        <label for="final-game"></label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="final-score">局分</label>
+                                    <input class="score-input" type="text" name="final-score" id="final-score">
+                                </div>
+                                <div><label for="final-max">上限</label>
+                                    <input class="score-input" type="text" name="final-max" id="final-max">
+                                </div>
+                            </div>
+                        </section>
+                        <section class="setting-item">
+                            <h2>间歇</h2>
+                            <div class="setting-group">
+                                <div class="switch-group">
+                                    <span>局内</span>
+                                    <span class="switch">
+                                        <input type="checkbox" name="interval-inner-on" id="interval-inner-on">
+                                        <label for="interval-inner-on"></label></span>
+                                </div>
+                                <div>
+                                    <input type="text" name="interval-inner" id="interval-inner">
+                                    <span>秒</span></div>
+                            </div>
+                            <div class="setting-group">
+                                <div class="switch-group">
+                                    <span>局间</span>
+                                    <span class="switch">
+                                        <input type="checkbox" name="interval-between-on" id="interval-between-on"
+                                            checked="true">
+                                        <label for="interval-between-on"></label></span>
+                                </div>
+                                <div>
+                                    <input type="text" name="interval-between" id="interval-between">
+                                    <span>秒</span></div>
+                            </div>
+                        </section>
+                        <section class="setting-item other-setting">
+                            <h2>其他设置</h2>
+                            <div class="setting-group">
+                                <label for="court-index">场地号</label>
+                                <input type="text" name="court-index" id="court-index">
+                            </div>
+                            <div class="setting-group">
+                                <label for="competition-name">赛事名称</label>
+                                <input type="text" name="competition-name" id="competition-name">
+                            </div>
+                            <div class="setting-group">
+                                <label for="match-id">比赛编号</label>
+                                <input type="text" name="match-id" id="match-id">
+                            </div>
+                            <div class="setting-group">
+                                <label for="referee">裁判长</label>
+                                <input type="text" name="referee" id="referee">
+                            </div>
+                            <div class="setting-group">
+                                <label for="umpire">主裁</label>
+                                <input type="text" name="umpire" id="umpire">
+                            </div>
+                            <div class="setting-group">
+                                <label for="service-judge">发球裁判员</label>
+                                <input type="text" name="service-judge" id="service-judge">
+                            </div>
+                        </section>
+                        <footer class="next-btn-box">
+                            <button id="next-btn">选手设置<i class="fa fa-arrow-right"></i></button>
+                        </footer>
+                    </article>
+                    <article class="player-setting">
+                        <h1>选手设置</h1>
+                        <section class="player-setting-item">
+                            <h2>左半区</h2>
+                            <div class="single-player">
+                                <div>
+                                </div>
+                                <div class="radio-group">
+                                    <span class="serve-col">发球</span>
+                                    <span class="receive-col">接发球</span>
+                                </div>
+                            </div>
+                            <div class="single-player">
+                                <div class="text-group">
+                                    <input type="text" name="a1-team" id="a1-team" class="team" placeholder="队伍名称">
+                                    <input type="text" name="a1-name" id="a1-name" class="team" placeholder="运动员名称">
+                                </div>
+                                <div class="radio-group">
+                                    <input class="serve-col" type="radio" name="serve" id="a1-serve" value="a1">
+                                    <input class="receive-col" type="radio" name="receive" id="a1-reveive" value="a1">
+                                </div>
+                            </div>
+                            <div class="single-player">
+                                <div class="text-group">
+                                    <input type="text" name="a2-team" id="a2-team" class="team" placeholder="队伍名称">
+                                    <input type="text" name="a2-name" id="a2-name" class="team" placeholder="运动员名称">
+                                </div>
+                                <div class="radio-group">
+                                    <input class="serve-col" type="radio" name="serve" id="a2-serve" value="a2">
+                                    <input class="receive-col" type="radio" name="receive" id="a2-receive" value="a2">
+                                </div>
+                            </div>
+                        </section>
+                        <section class="player-setting-item">
+                            <h2>右半区</h2>
+                            <div class="single-player">
+                                <div>
+                                </div>
+                                <div class="radio-group">
+                                    <span class="serve-col">发球</span>
+                                    <span class="receive-col">接发球</span>
+                                </div>
+                            </div>
+                            <div class="single-player">
+                                <div class="text-group">
+                                    <input type="text" name="b1-team" id="b1-team" class="team" placeholder="队伍名称">
+                                    <input type="text" name="b1-name" id="b1-name" class="team" placeholder="运动员名称">
+                                </div>
+                                <div class="radio-group">
+                                    <input class="serve-col" type="radio" name="serve" id="b1-serve" value="b1">
+                                    <input class="receive-col" type="radio" name="receive" id="b1-receive" value="b2">
+                                </div>
+                            </div>
+                            <div class="single-player">
+                                <div class="text-group">
+                                    <input type="text" name="b2-team" id="b2-team" class="team" placeholder="队伍名称">
+                                    <input type="text" name="b2-name" id="b2-name" class="team" placeholder="运动员名称">
+                                </div>
+                                <div class="radio-group">
+                                    <input class="serve-col" type="radio" name="serve" id="b2-serve" value="b2">
+                                    <input class="receive-col" type="radio" name="receive" id="b2-receive" value="b2">
+                                </div>
+                            </div>
+                        </section>
+                        <section class="start-btn-box">
+                            <button class="btn" id="change-end">左右交换</button>
+                            <button class="btn" id="start-game">开始比赛</button>
+                        </section>
+                        <footer class="prev-btn-box">
+                            <button id="prev-btn"><i class="fa fa-arrow-left"></i>比赛设置</button>
+
+                        </footer>
+
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <article class="info-box">
+            <nav><a id="close"><i class="fa fa-times"></i></a></nav>
+            <section class="serve-box">
+                <div class="game-setting-box">
+                    <span id="s-game">3局</span>
+                    <span id="s-score">21分</span>
+                    <span id="s-end-change">交换场地</span>
+                    <span id="s-2high-win">封顶30分</span>
+                    <span id="s-max-score">封顶30分</span>
+                    <span id="s-match-id">XD-A12</span>
+                </div>
+                <div class="court-box">
+                    <div class="court">
+                        <div id="left-player">
+                            <div class="player">
+                                <span>化工</span>
+                                <p>陈子霖</p>
+                            </div>
+                            <div class="player">
+                                <span>电气</span>
+                                <p>程千冉</p>
+                            </div>
+                        </div>
+
+                        <div id="right-player">
+                            <div class="player">
+                                <span>计软智</span>
+                                <p>徐小健</p>
+                            </div>
+                            <div class="player">
+                                <span>医学院</span>
+                                <p>黄紫棋</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="serve-icon-box">
+                        <div class="serve-icon-wrapper">
+                            <i class="fa fa-arrow-up"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="score-box">
+                <div class="match-score">
+                    <p>16:21</p>
+                    <p>24:22</p>
+                </div>
+                <div class="game-score">
+                    <h1 id="left-score" class="score serve-score">
+                        16
+                    </h1>
+                    <div class="game-info">
+                        <div>
+                            <p id="game-index">第三局</p>
+                        </div>
+                        <h2>:</h2>
+
+                    </div>
+                    <h1 id="right-score" class="score">
+                        16
+                    </h1>
+                </div>
+                <div class="time">
+                    <span>用时：</span>
+                    <p>00:19:02</p>
+                </div>
+            </section>
+
+        </article>
+        <article class="operation-box">
+            <section class="score-buttons">
+                <button id="left-plus" class="btn">得分</button>
+                <button id="right-plus" class="btn">得分</button>
+            </section>
+            <section class="score-table">
+                <div class="players">
+                    <div class="p1-line">
+                        <p>陈子霖</p>
+                    </div>
+                    <div class="p1-line">
+                        <p>程千冉</p>
+                    </div>
+                    <div class="p2-line">
+                        <p>徐小健</p>
+                    </div>
+                    <div class="p2-line">
+                        <p>黄紫棋</p>
+                    </div>
+                </div>
+                <div class="serves">
+                    <div class="p1-line">
+                        <p></p>
+                    </div>
+                    <div class="p1-line">
+                        <p>S</p>
+                    </div>
+                    <div class="p2-line">
+                        <p>R</p>
+                    </div>
+                    <div class="p2-line">
+                        <p></p>
+                    </div>
+                </div>
+                <div class="scroll-shadow"></div>
+                <div class="score-panel">
+                    <div class="scroll-panel">
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div class="single-score">
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p1-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                            <div class="p2-line">
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="operation-buttons">
+                <button id="withdraw" class="btn">撤销比分 </button>
+                <button id="event-record" class="btn">事件记录</button>
+            </section>
+        </article>
+    </div>
+    <div class="event-dlg hidden">
+        <section class="dlg">
+            <div class="event-operation">
+                <h3 class="names"><span>陈子霖</span>&<span>程千冉</span></h3>
+                <div class="injure-panel">
+                    <button class="btn" id="p1-injure"><i class="fa fa-medkit"></i>医疗暂停</button>
+                    <div id="p1-injure-time" class="time-panel">
+                        <p>00<span>:</span>00</p>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="p1-retire"><i class="fa fa-times"></i>弃权</button>
+                    <button class="btn" id="p1-yellow-card"><i class="fa fa-square yellow-card"></i>黄牌</button>
+                    <button class="btn" id="p1-red-card"><i class="fa fa-square red-card"></i>红牌</button>
+                    <button class="btn" id="p1-black-card"><i class="fa fa-square black-card"></i>黑牌</button>
+                </div>
+            </div>
+            <div class="event-operation">
+                <h3 class="names"><span>徐小健</span>&<span>黄紫棋</span></h3>
+                <div class="injure-panel">
+                    <button class="btn" id="p1-injure"><i class="fa fa-medkit"></i>医疗暂停</button>
+                    <div id="p1-injure-time" class="time-panel active">
+                        <p>00<span>:</span>00</p>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="p1-retire"><i class="fa fa-times"></i>弃权</button>
+                    <button class="btn" id="p1-yellow-card"><i class="fa fa-square yellow-card"></i>黄牌</button>
+                    <button class="btn" id="p1-red-card"><i class="fa fa-square red-card"></i>红牌</button>
+                    <button class="btn" id="p1-black-card"><i class="fa fa-square black-card"></i>黑牌</button>
+                </div>
+            </div>
+            <div class="cancel-box"><button class="btn" id="cancel">取消</button></div>
+        </section>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="/assets/js/umpire.js"></script>
+    <script>
+        const scoreScrollPanel = document.querySelector(".score-panel");
+        scoreScrollPanel.addEventListener("scroll", function () {
+            if (scoreScrollPanel.scrollLeft > 0) {
+                $(".scroll-shadow").show();
+            } else {
+                $(".scroll-shadow").hide();
+            }
+        });
+        const settingScrollPanel = document.querySelector(".input-wrapper");
+        const settingContentPanel = document.querySelector(".input-scroll");
+        if (settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
+            $(".bottom-shadow").hide();
+        }
+        settingScrollPanel.addEventListener("scroll", function () {
+            if (settingScrollPanel.scrollTop > 0 || settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
+                $(".bottom-shadow").hide();
+            } else {
+                $(".bottom-shadow").show();
+            }
+        });
+        const eventRecordBtn = document.querySelector("#event-record");
+        eventRecordBtn.addEventListener("click", function () {
+            let container = $(".container");
+            container.toggleClass("blur");
+            let eventDlg = $(".event-dlg");
+            eventDlg.toggleClass("hidden");
+        });
+
+        const eventButtons = document.querySelectorAll(".dlg button");
+        for (let button of eventButtons) {
+            button.addEventListener("click", function () {
+                let container = $(".container");
+                container.toggleClass("blur");
+                let eventDlg = $(".event-dlg");
+                eventDlg.toggleClass("hidden");
+            });
+        }
+        const hintBtn = document.querySelector("#hint-btn");
+        hintBtn.addEventListener("click", function () {
+            $(".hint").toggleClass("hidden");
+        });
+        const nextBtn = document.querySelector("#next-btn");
+        nextBtn.addEventListener("click", function () {
+            $(".match-setting").hide();
+            $(".player-setting").show();
+            $(".bottom-shadow").hide();
+        });
+        const prevBtn = document.querySelector("#prev-btn");
+        prevBtn.addEventListener("click", function () {
+            $(".match-setting").show();
+            $(".player-setting").hide();
+            if (settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
+                $(".bottom-shadow").hide();
+            } else {
+                $(".bottom-shadow").show();
+            }
+        });
+        document.querySelector("#left-plus").addEventListener("click", function () { scorePlus("left") });
+    </script>
+</body>
+
+</html>
