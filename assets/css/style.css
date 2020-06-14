@@ -17,7 +17,7 @@ html, body {
 
 .container {
     width: 500px;
-    height:100%;
+    height: 100%;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -217,13 +217,8 @@ h1.score {
     font-size: 3.5em;
     line-height: 1em;
     width: 40%;
-    color:#FFFFFF;
-    transition: all 0.5s;
-}
-
-h1.score:active{
-    transform: rotateX(360deg);
-    transition: transform 0.5s;
+    color: #FFFFFF;
+    transition: all 0.8s;
 }
 
 h1.serve-score {
@@ -630,24 +625,23 @@ h1.serve-score {
 .score-input {
     width: 4em !important;
 }
-.next-btn-box,.prev-btn-box,.start-btn-box{
+
+.next-btn-box, .prev-btn-box, .start-btn-box {
     display: flex;
-    
     margin: 20px 0;
 }
 
-.next-btn-box{
+.next-btn-box {
     justify-content: flex-end;
 }
 
-.prev-btn-box{
+.prev-btn-box {
     justify-content: flex-start;
 }
 
-.start-btn-box{
+.start-btn-box {
     justify-content: center;
 }
-
 
 #next-btn, #prev-btn {
     background: none;
@@ -665,13 +659,16 @@ h1.serve-score {
     font-size: 20px;
     line-height: 20px;
 }
-#next-btn:hover, #prev-btn:hover{
+
+#next-btn:hover, #prev-btn:hover {
     transition: all 0.5s;
 }
-#next-btn:hover i{
+
+#next-btn:hover i {
     animation: moveRight 0.5s infinite;
 }
-#prev-btn:hover i{
+
+#prev-btn:hover i {
     animation: moveLeft 0.5s infinite;
 }
 
@@ -782,20 +779,20 @@ h1.serve-score {
     .input-wrapper {
         padding: 0 40px;
     }
-    .info-box,.operation-box{
-        display:flex;
+    .info-box, .operation-box {
+        display: flex;
         flex-direction: column;
         justify-content: space-evenly;
         /* padding-top:0; */
-        border:none;
+        border: none;
         box-shadow: 0 0 10px #333333;
         box-sizing: border-box;
     }
-    .info-box{
-        height:65vh;
+    .info-box {
+        height: 65vh;
     }
-    .operation-box{
-        height:calc(35vh + 40px);
+    .operation-box {
+        height: calc(35vh + 40px);
     }
 }
 
@@ -809,21 +806,20 @@ h1.serve-score {
     }
 }
 
-@keyframes moveRight{
-    0%,100%{
+@keyframes moveRight {
+    0%, 100% {
         transform: translateX(0);
     }
-
-    50%{
+    50% {
         transform: translateX(5px);
     }
 }
-@keyframes moveLeft{
-    0%,100%{
+
+@keyframes moveLeft {
+    0%, 100% {
         transform: translateX(0);
     }
-
-    50%{
+    50% {
         transform: translateX(-5px);
     }
 }
