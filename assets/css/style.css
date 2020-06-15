@@ -15,6 +15,26 @@ html, body {
     background: #EEEEEE;
 }
 
+input{
+    transition: all 0.5s;
+}
+
+.rotate-northeast {
+    transform: rotate(45deg);
+}
+
+.rotate-southeast {
+    transform: rotate(135deg);
+}
+
+.rotate-southwest {
+    transform: rotate(-135deg);
+}
+
+.rotate-northwest {
+    transform: rotate(-45deg);
+}
+
 .container {
     width: 500px;
     height: 100%;
@@ -66,14 +86,14 @@ html, body {
     width: 100%;
     padding: 0 45px 60px;
     color: #EEE;
-    /* height: 70vh; */
+    height: 65vh;
     box-sizing: border-box;
 }
 
 .info-box nav {
-    height: 7vh;
-    line-height: 7vh;
-    font-size: 20px;
+    height: 5vh;
+    line-height: 5vh;
+    font-size: 3vh;
     color: #FFFFFF;
     text-align: right;
 }
@@ -93,26 +113,26 @@ nav a:hover i {
 }
 
 .game-setting-box {
-    height: 4vh;
+    height: 5vh;
+}
+
+.game-setting-wrapper {
     font-size: 12px;
-    line-height: 4vh;
+    /* line-height: 14px; */
     padding: 0 10px;
-    z-index: 2;
+    /* z-index: 2; */
+    text-align: center;
 }
 
-.game-setting-box span {
-    padding: 2px;
-}
-
-.game-setting-box span:last-child {
-    float: right;
-}
+/* .game-setting-box span {
+    padding: 0 2px;
+} */
 
 .court-box {
     margin: 0 -45px;
     background-image: url('/assets/image/badminton-court-flat.svg');
     background-size: cover;
-    height: 26vh;
+    height: 24vh;
     background-position: center;
     background-size: 100%;
     background-repeat: no-repeat;
@@ -187,14 +207,18 @@ nav a:hover i {
     box-shadow: 0 0 10px #333333;
     border-radius: 50%;
     color: #000000;
-    transform: rotate(45deg);
+}
+
+#serve-icon {
+    transition: 0.8s;
 }
 
 .score-box {
     /* background: #3245EE; */
+    height:30vh;
 }
 
-.match-score {
+#prev-games-score {
     width: 100%;
     justify-content: center;
     display: flex;
@@ -330,14 +354,23 @@ h1.serve-score {
 }
 
 .scroll-shadow {
-    background: linear-gradient(to right, #33333333, transparent);
     position: absolute;
-    left: 40%;
     top: 0;
     height: 100%;
     width: 6%;
     z-index: 2;
     display: none;
+}
+
+.shadow-left {
+    background: linear-gradient(to right, #33333333, transparent);
+    left: 40%;
+}
+
+.shadow-right {
+    background: linear-gradient(to left, #33333333, transparent);
+    right: 0;
+    display: block;
 }
 
 .btn {
@@ -356,6 +389,10 @@ h1.serve-score {
 .btn:hover {
     background: #107a43;
     transition: 0.5s;
+}
+
+.btn:disabled{
+    background: #CCCCCC;
 }
 
 .blur {
@@ -390,6 +427,7 @@ h1.serve-score {
 .input-box {
     height: 650px;
     padding-top: 0;
+    overflow: hidden;
 }
 
 .input-box nav {
@@ -526,12 +564,39 @@ h1.serve-score {
 .bottom-shadow i {
     font-size: 1em;
     color: #1c9255;
+    cursor: pointer;
 }
 
+.bottom-shadow i:hover{
+    animation: moveBottom 0.5s infinite;
+}
+
+.scroll-top{
+    position: fixed;
+    bottom:80px;
+    transform:translateY(40px);
+    left:40px;
+    height:40px;
+    width:40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 0 0 10px #333333;
+    background: #107a43;
+    color:#FFFFFF;
+    display: none;
+    transition: transform 0.5s;
+}
 .input-wrapper {
+    position: relative;
     height: 600px;
     padding: 0 20px;
     overflow: auto;
+    scrollbar-width: 0;
+}
+
+.input-wrapper::-webkit-scrollbar{
+    display: none;
 }
 
 .input-scroll h1 {
@@ -603,6 +668,7 @@ h1.serve-score {
     width: 7em;
     margin-left: 2px;
     height: 1.5em;
+    text-align: right;
 }
 
 .other-setting .setting-group input[type="text"] {
@@ -623,7 +689,7 @@ h1.serve-score {
 }
 
 .score-input {
-    width: 4em !important;
+    width: 2em !important;
 }
 
 .next-btn-box, .prev-btn-box, .start-btn-box {
@@ -821,5 +887,14 @@ h1.serve-score {
     }
     50% {
         transform: translateX(-5px);
+    }
+}
+
+@keyframes moveBottom {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateY(5px);
     }
 }

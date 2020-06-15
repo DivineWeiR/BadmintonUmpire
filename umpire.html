@@ -5,21 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/swipe-button.css">
+    <link rel="stylesheet" href="assets/css/switch-button.css">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
     <title>开始比赛</title>
 </head>
 
 <body>
-    <div class="input-container hidden">
+    <div class="input-container">
         <div class="input-box">
             <nav>
                 <button id="cancel_setting"><i class="fa fa-times"></i></button>
             </nav>
             <div class="input-wrapper">
-                <div class="bottom-shadow"><i class="fa fa-angle-double-down"></i></div>
+                <div class="scroll-top"><i class="fa fa-angle-double-up" onclick="scrollToTop('input-wrapper')"></i></div>
+                <div class="bottom-shadow"><i class="fa fa-angle-double-down" onclick="scrollToBottom('input-wrapper')"></i></div>
                 <div class="input-scroll">
-                    <article class="match-setting hidden">
+                    <article class="match-setting">
                         <h1>比赛设置</h1>
                         <section class="setting-item">
                             <h2>比赛类型</h2>
@@ -58,8 +59,8 @@
                                 <div><input type="radio" id="score21" name="game-score" value="21" checked>
                                     <label for="score11">21分</label></div>
                                 <div><input type="radio" id="score-diy" name="game-score" value="-1">
-                                    <input type="text" name="score-diy-input" id="score-diy-input"
-                                        placeholder="请输入定制比分"></div>
+                                    <input type="text" name="score-diy-input" id="score-diy-input" placeholder="请输入定制比分"
+                                        disabled="true"></div>
                             </div>
                             <div class="setting-group">
                                 <div class="switch-group"><span>两分胜出</span>
@@ -70,7 +71,8 @@
                                     </span>
                                 </div>
                                 <div><label for="max-score">上限</label>
-                                    <input type="text" name="max-score" id="max-score" placeholder="请输入上限分数"></div>
+                                    <input type="text" name="max-score" id="max-score" placeholder="请输入上限分数" value="30">
+                                </div>
                             </div>
                             <div class="setting-group">
                                 <div class="switch-group">
@@ -96,6 +98,13 @@
                                         <label for="final-game"></label>
                                     </div>
                                 </div>
+                                <div class="switch-group">
+                                    <span>两分胜出</span>
+                                    <div class="switch">
+                                        <input type="checkbox" name="final-2win" id="final-2win" checked="checked">
+                                        <label for="final-2win"></label>
+                                    </div>
+                                </div>
                                 <div>
                                     <label for="final-score">局分</label>
                                     <input class="score-input" type="text" name="final-score" id="final-score">
@@ -115,7 +124,7 @@
                                         <label for="interval-inner-on"></label></span>
                                 </div>
                                 <div>
-                                    <input type="text" name="interval-inner" id="interval-inner">
+                                    <input type="text" name="interval-inner" id="interval-inner" value="60">
                                     <span>秒</span></div>
                             </div>
                             <div class="setting-group">
@@ -127,7 +136,7 @@
                                         <label for="interval-between-on"></label></span>
                                 </div>
                                 <div>
-                                    <input type="text" name="interval-between" id="interval-between">
+                                    <input type="text" name="interval-between" id="interval-between" value="120">
                                     <span>秒</span></div>
                             </div>
                         </section>
@@ -162,7 +171,7 @@
                             <button id="next-btn">选手设置<i class="fa fa-arrow-right"></i></button>
                         </footer>
                     </article>
-                    <article class="player-setting">
+                    <article class="player-setting hidden">
                         <h1>选手设置</h1>
                         <section class="player-setting-item">
                             <h2>左半区</h2>
@@ -180,8 +189,10 @@
                                     <input type="text" name="a1-name" id="a1-name" class="team" placeholder="运动员名称">
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="a1-serve" value="a1">
-                                    <input class="receive-col" type="radio" name="receive" id="a1-reveive" value="a1">
+                                    <input class="serve-col" type="radio" name="serve" id="a1-serve" value="a1"
+                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="a1-receive" value="a1"
+                                        onclick="radioProtect(this.id)">
                                 </div>
                             </div>
                             <div class="single-player">
@@ -190,8 +201,10 @@
                                     <input type="text" name="a2-name" id="a2-name" class="team" placeholder="运动员名称">
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="a2-serve" value="a2">
-                                    <input class="receive-col" type="radio" name="receive" id="a2-receive" value="a2">
+                                    <input class="serve-col" type="radio" name="serve" id="a2-serve" value="a2"
+                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="a2-receive" value="a2"
+                                        onclick="radioProtect(this.id)">
                                 </div>
                             </div>
                         </section>
@@ -211,8 +224,10 @@
                                     <input type="text" name="b1-name" id="b1-name" class="team" placeholder="运动员名称">
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="b1-serve" value="b1">
-                                    <input class="receive-col" type="radio" name="receive" id="b1-receive" value="b2">
+                                    <input class="serve-col" type="radio" name="serve" id="b1-serve" value="b1"
+                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="b1-receive" value="b1"
+                                        onclick="radioProtect(this.id)">
                                 </div>
                             </div>
                             <div class="single-player">
@@ -221,14 +236,16 @@
                                     <input type="text" name="b2-name" id="b2-name" class="team" placeholder="运动员名称">
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="b2-serve" value="b2">
-                                    <input class="receive-col" type="radio" name="receive" id="b2-receive" value="b2">
+                                    <input class="serve-col" type="radio" name="serve" id="b2-serve" value="b2"
+                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="b2-receive" value="b2"
+                                        onclick="radioProtect(this.id)">
                                 </div>
                             </div>
                         </section>
                         <section class="start-btn-box">
-                            <button class="btn" id="change-end">左右交换</button>
-                            <button class="btn" id="start-game">开始比赛</button>
+                            <button class="btn" id="change-end" onclick="swapLR()">左右交换</button>
+                            <button class="btn" id="start-game" onclick="start()">开始比赛</button>
                         </section>
                         <footer class="prev-btn-box">
                             <button id="prev-btn"><i class="fa fa-arrow-left"></i>比赛设置</button>
@@ -245,12 +262,22 @@
             <nav><a id="close"><i class="fa fa-times"></i></a></nav>
             <section class="serve-box">
                 <div class="game-setting-box">
-                    <span id="s-game">3局</span>
-                    <span id="s-score">21分</span>
-                    <span id="s-end-change">交换场地</span>
-                    <span id="s-2high-win">封顶30分</span>
-                    <span id="s-max-score">封顶30分</span>
-                    <span id="s-match-id">XD-A12</span>
+                    <div class="game-setting-wrapper">
+                        <p><span id="s-game-num">3</span>局
+                            <span id="s-score">21</span>分
+                            <span id="s-end-change">交换场地</span>
+                            <span id="s-2high-win">2分胜出</span>
+                            <span id="s-max-score">封顶30分</span>
+                            <span id="s-court-index">9号场地</span></p>
+
+                    </div>
+                    <div class="game-setting-wrapper">
+                        <p>
+                            <span id="s-competition-name">第六届院系杯-小组赛</span>
+                            <span id="s-game-type">混双</span>
+                            <span id="s-match-id">XD-A12</span>
+                        </p>
+                    </div>
                 </div>
                 <div class="court-box">
                     <div class="court">
@@ -278,29 +305,31 @@
                     </div>
                     <div class="serve-icon-box">
                         <div class="serve-icon-wrapper">
-                            <i class="fa fa-arrow-up"></i>
+                            <i id="serve-icon" class="fa fa-arrow-up"></i>
                         </div>
                     </div>
                 </div>
             </section>
             <section class="score-box">
-                <div class="match-score">
+                <div id="prev-games-score">
                     <p>16:21</p>
                     <p>24:22</p>
                 </div>
                 <div class="game-score">
                     <h1 id="left-score" class="score serve-score">
-                        16
+                        0
                     </h1>
                     <div class="game-info">
                         <div>
                             <p id="game-index">第三局</p>
                         </div>
                         <h2>:</h2>
-
+                        <div>
+                            <p id="match-score">1:1</p>
+                        </div>
                     </div>
                     <h1 id="right-score" class="score">
-                        16
+                        0
                     </h1>
                 </div>
                 <div class="time">
@@ -316,7 +345,7 @@
                 <button id="right-plus" class="btn">得分</button>
             </section>
             <section class="score-table">
-                <div class="players">
+                <div class="players" id="names-col">
                     <div class="p1-line">
                         <p>陈子霖</p>
                     </div>
@@ -330,23 +359,24 @@
                         <p>黄紫棋</p>
                     </div>
                 </div>
-                <div class="serves">
+                <div class="serves" id="serves-col">
                     <div class="p1-line">
-                        <p></p>
+                        <p id="pA1-serve"></p>
                     </div>
                     <div class="p1-line">
-                        <p>S</p>
+                        <p id="pA2-serve"></p>
                     </div>
                     <div class="p2-line">
-                        <p>R</p>
+                        <p id="pB1-serve"></p>
                     </div>
                     <div class="p2-line">
-                        <p></p>
+                        <p id="pB2-serve"></p>
                     </div>
                 </div>
-                <div class="scroll-shadow"></div>
+                <div class="scroll-shadow shadow-left"></div>
+                <div class="scroll-shadow shadow-right"></div>
                 <div class="score-panel">
-                    <div class="scroll-panel">
+                    <div class="scroll-panel" id="scroll-panel">
                         <div class="single-score">
                             <div class="p1-line">
                                 <p></p>
@@ -583,7 +613,7 @@
     <div class="event-dlg hidden">
         <section class="dlg">
             <div class="event-operation">
-                <h3 class="names"><span>陈子霖</span>&<span>程千冉</span></h3>
+                <h3 class="names" id="event-playerA"><span>陈子霖</span>&<span>程千冉</span></h3>
                 <div class="injure-panel">
                     <button class="btn" id="p1-injure"><i class="fa fa-medkit"></i>医疗暂停</button>
                     <div id="p1-injure-time" class="time-panel">
@@ -598,7 +628,7 @@
                 </div>
             </div>
             <div class="event-operation">
-                <h3 class="names"><span>徐小健</span>&<span>黄紫棋</span></h3>
+                <h3 class="names" id="event-playerB"><span>徐小健</span>&<span>黄紫棋</span></h3>
                 <div class="injure-panel">
                     <button class="btn" id="p1-injure"><i class="fa fa-medkit"></i>医疗暂停</button>
                     <div id="p1-injure-time" class="time-panel active">
@@ -618,24 +648,37 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="/assets/js/umpire.js"></script>
     <script>
+
+        window.onload = function () {
+            initSettingPanel();
+        }
         const scoreScrollPanel = document.querySelector(".score-panel");
+        const scoreContentPanel = document.querySelector(".scroll-panel");
         scoreScrollPanel.addEventListener("scroll", function () {
             if (scoreScrollPanel.scrollLeft > 0) {
-                $(".scroll-shadow").show();
+                $(".shadow-left").show();
             } else {
-                $(".scroll-shadow").hide();
+                $(".shadow-left").hide();
+            }
+            if (scoreScrollPanel.scrollLeft == scoreContentPanel.scrollWidth - scoreScrollPanel.clientWidth) {
+                $(".shadow-right").hide();
+            } else {
+                $(".shadow-right").show();
             }
         });
         const settingScrollPanel = document.querySelector(".input-wrapper");
         const settingContentPanel = document.querySelector(".input-scroll");
         if (settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
             $(".bottom-shadow").hide();
+            $(".scroll-top").hide();
         }
         settingScrollPanel.addEventListener("scroll", function () {
             if (settingScrollPanel.scrollTop > 0 || settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
                 $(".bottom-shadow").hide();
+                $(".scroll-top").show();
             } else {
                 $(".bottom-shadow").show();
+                $(".scroll-top").hide();
             }
         });
         const eventRecordBtn = document.querySelector("#event-record");
@@ -664,15 +707,24 @@
             $(".match-setting").hide();
             $(".player-setting").show();
             $(".bottom-shadow").hide();
+            if (settingScrollPanel.scrollTop > 0 || settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
+                $(".bottom-shadow").hide();
+                $(".scroll-top").show();
+            } else {
+                $(".bottom-shadow").show();
+                $(".scroll-top").hide();
+            }
         });
         const prevBtn = document.querySelector("#prev-btn");
         prevBtn.addEventListener("click", function () {
             $(".match-setting").show();
             $(".player-setting").hide();
-            if (settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
+            if (settingScrollPanel.scrollTop > 0 || settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
                 $(".bottom-shadow").hide();
+                $(".scroll-top").show();
             } else {
                 $(".bottom-shadow").show();
+                $(".scroll-top").hide();
             }
         });
         document.querySelector("#left-plus").addEventListener("click", function () { scorePlus("left") });

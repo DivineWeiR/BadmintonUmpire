@@ -51,3 +51,10 @@ input[type="checkbox"]:checked+label:after {
     background-color: #0075ff;
     transition: all 0.5s;
 }
+input[type="checkbox"]:disabled+label:before{
+    background-color: #ECECEC;
+    box-shadow: 0 0 5px #AAAAAA;
+}
+input[type="checkbox"]:disabled+label:after {
+    background-color: #CCCCCC;
+}
