@@ -130,7 +130,7 @@ nav a:hover i {
 
 .court-box {
     margin: 0 -45px;
-    background-image: url('/assets/image/badminton-court-flat.svg');
+    background-image: url('assets/image/badminton-court-flat.svg');
     background-size: cover;
     height: 24vh;
     background-position: center;
