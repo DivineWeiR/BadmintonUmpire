@@ -58,3 +58,4 @@ input[type="checkbox"]:disabled+label:before{
 input[type="checkbox"]:disabled+label:after {
     background-color: #CCCCCC;
 }
+

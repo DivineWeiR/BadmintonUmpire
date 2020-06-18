@@ -13,9 +13,10 @@ html, body {
     width: 100%;
     margin: auto;
     background: #EEEEEE;
+    transition: 0.5s;
 }
 
-input{
+input {
     transition: all 0.5s;
 }
 
@@ -130,7 +131,7 @@ nav a:hover i {
 
 .court-box {
     margin: 0 -45px;
-    background-image: url('assets/image/badminton-court-flat.svg');
+    background-image: url('../image/badminton-court-flat.svg');
     background-size: cover;
     height: 24vh;
     background-position: center;
@@ -170,6 +171,8 @@ nav a:hover i {
     margin: 1vh;
     text-align: center;
     width: 4em;
+    height: 3.2em;
+    transition: width 0.5s;
 }
 
 .player span {
@@ -215,7 +218,7 @@ nav a:hover i {
 
 .score-box {
     /* background: #3245EE; */
-    height:30vh;
+    height: 30vh;
 }
 
 #prev-games-score {
@@ -249,7 +252,7 @@ h1.serve-score {
     color: #ff9148;
 }
 
-#game-index {
+.game-index {
     font-size: 14px;
 }
 
@@ -277,12 +280,6 @@ h1.serve-score {
     bottom: 0;
 }
 
-.score-buttons, .operation-buttons {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
 .score-table {
     display: flex;
     margin: 1em -5vw;
@@ -295,7 +292,7 @@ h1.serve-score {
     border-left: none;
     height: 1.5em;
     line-height: 1.5em;
-    min-width: 1.2em;
+    min-width: 1.5em;
     text-align: center;
 }
 
@@ -326,6 +323,7 @@ h1.serve-score {
 
 .scroll-panel {
     display: flex;
+    position: relative;
 }
 
 .score-table .players {
@@ -391,7 +389,7 @@ h1.serve-score {
     transition: 0.5s;
 }
 
-.btn:disabled{
+.btn:disabled {
     background: #CCCCCC;
 }
 
@@ -403,7 +401,14 @@ h1.serve-score {
     display: none;
 }
 
-.event-dlg, .input-container {
+.transparent {
+    border: none;
+    background: transparent;
+    color: transparent;
+    opacity: 0;
+}
+
+.event-dlg, .input-container, .interval-dlg {
     height: 100%;
     width: 100%;
     position: absolute;
@@ -437,14 +442,20 @@ h1.serve-score {
     justify-content: flex-end;
 }
 
-.input-box nav button {
+.input-box nav a, .cancel-box button {
     font-size: 20px;
+    line-height: 50px;
+    padding-right: 20px;
     border: none;
     background: none;
     color: #107a43;
 }
 
-.input-box nav button:hover i {
+.cancel-box button {
+    padding-right: 0;
+}
+
+.input-box nav a:hover i, .cancel-box button:hover i {
     transform: rotate(90deg);
     transition: transform 0.5s;
 }
@@ -452,7 +463,7 @@ h1.serve-score {
 .event-operation {
     border: #107a43 1px solid;
     border-radius: 5px;
-    margin-bottom: 1.5em;
+    margin: 1em 1em 1.5em;
     padding: 1em 0.5em 0.5em;
     position: relative;
 }
@@ -518,15 +529,22 @@ h1.serve-score {
     padding: 0 0.2em;
 }
 
-.time-panel.active span {
+.time-panel.active span.seperator {
     animation: blink 1s infinite;
 }
 
 .cancel-box {
-    width: 100%;
     position: relative;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    align-items: center;
+    margin-top: -20px;
+}
+
+.cancel-box h1, .interval-dlg h1 {
+    font-size: 1.5em;
+    color: #107a43;
 }
 
 .fa-medkit {
@@ -559,6 +577,7 @@ h1.serve-score {
     height: 4em;
     line-height: 4em;
     background: linear-gradient(to bottom, #FFFFFFCC, #DDDDDD);
+    z-index: 5;
 }
 
 .bottom-shadow i {
@@ -567,26 +586,28 @@ h1.serve-score {
     cursor: pointer;
 }
 
-.bottom-shadow i:hover{
+.bottom-shadow i:hover {
     animation: moveBottom 0.5s infinite;
 }
 
-.scroll-top{
+.scroll-top {
     position: fixed;
-    bottom:80px;
-    transform:translateY(40px);
-    left:40px;
-    height:40px;
-    width:40px;
+    bottom: 80px;
+    transform: translateY(40px);
+    left: 40px;
+    height: 40px;
+    width: 40px;
     line-height: 40px;
     text-align: center;
     border-radius: 20px;
     box-shadow: 0 0 10px #333333;
     background: #107a43;
-    color:#FFFFFF;
+    color: #FFFFFF;
     display: none;
     transition: transform 0.5s;
+    z-index: 5;
 }
+
 .input-wrapper {
     position: relative;
     height: 600px;
@@ -595,7 +616,7 @@ h1.serve-score {
     scrollbar-width: 0;
 }
 
-.input-wrapper::-webkit-scrollbar{
+.input-wrapper::-webkit-scrollbar {
     display: none;
 }
 
@@ -692,7 +713,7 @@ h1.serve-score {
     width: 2em !important;
 }
 
-.next-btn-box, .prev-btn-box, .start-btn-box {
+.next-btn-box, .prev-btn-box, .btn-box {
     display: flex;
     margin: 20px 0;
 }
@@ -705,7 +726,7 @@ h1.serve-score {
     justify-content: flex-start;
 }
 
-.start-btn-box {
+.btn-box {
     justify-content: center;
 }
 
@@ -793,6 +814,38 @@ h1.serve-score {
 
 .text-group input {
     margin-right: 5px;
+}
+
+.interval-dlg .dlg {
+    padding: 40px 20px 20px;
+}
+
+.interval-dlg h1 {
+    width: 100%;
+    text-align: center;
+}
+#counter{
+    margin-top: 1em;
+    margin-bottom: 2em;
+    margin: auto;
+    width: 60%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    background: #c5f8de;
+}
+
+.interval-count-down{
+    font-size: 48px;
+    color: #666666;
+    font-family: digit;
+    text-align: right;
+    position: relative;
+}
+
+.interval-count-down{
+    padding:0 10px;
 }
 
 @media (max-width: 599px) {
