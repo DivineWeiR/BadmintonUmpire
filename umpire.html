@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="input-container hidden">
+    <div class="input-container">
         <div class="input-box">
             <nav>
                 <a id="cancel_setting" href="index.html"><i class="fa fa-times"></i></a>
@@ -28,38 +28,39 @@
                             <h2>比赛类型</h2>
                             <div class="setting-group">
                                 <div><input type="radio" id="ms" name="game-type" value="ms" checked>
-                                    <label for="ms">男单</label></div>
+                                    <label for="ms"></label><span>男单</span>
+                                </div>
                                 <div><input type="radio" id="ws" name="game-type" value="ws">
-                                    <label for="ws">女单</label></div>
+                                    <label for="ws"></label><span>女单</span></div>
                                 <div><input type="radio" id="md" name="game-type" value="md">
-                                    <label for="md">男双</label></div>
+                                    <label for="md"></label><span>男双</span></div>
                                 <div><input type="radio" id="wd" name="game-type" value="wd">
-                                    <label for="wd">女双</label></div>
+                                    <label for="wd"></label><span>女双</span></div>
                                 <div><input type="radio" id="xd" name="game-type" value="xd">
-                                    <label for="xd">混双</label></div>
+                                    <label for="xd"></label><span>混双</span></div>
                             </div>
                         </section>
                         <section class="setting-item">
                             <h2>比赛局数</h2>
                             <div class="setting-group">
                                 <div>
-                                    <input type="radio" id="game1" name="game-num" value="1">
-                                    <label for="game1">1局</label></div>
-                                <div><input type="radio" id="game3" name="game-num" value="3" checked>
-                                    <label for="game3">3局</label></div>
+                                    <input type="radio" id="game1" name="game-num" value="1" checked>
+                                    <label for="game1"></label><span>1局</span></div>
+                                <div><input type="radio" id="game3" name="game-num" value="3">
+                                    <label for="game3"></label><span>3局</span></div>
                                 <div><input type="radio" id="game5" name="game-num" value="5">
-                                    <label for="game5">5局</label></div>
+                                    <label for="game5"></label><span>5局</span></div>
                             </div>
                         </section>
                         <section class="setting-item">
                             <h2>每局分数</h2>
                             <div class="setting-group">
-                                <div><input type="radio" id="score11" name="game-score" value="11">
-                                    <label for="score11">11分</label></div>
+                                <div><input type="radio" id="score11" name="game-score" value="11" checked>
+                                    <label for="score11"></label><span>11分</span></div>
                                 <div><input type="radio" id="score15" name="game-score" value="15">
-                                    <label for="score15">15分</label></div>
-                                <div><input type="radio" id="score21" name="game-score" value="21" checked>
-                                    <label for="score11">21分</label></div>
+                                    <label for="score15"></label><span>15分</span></div>
+                                <div><input type="radio" id="score21" name="game-score" value="21">
+                                    <label for="score21"></label><span>21分</span></div>
                                 <div><input type="radio" id="score-diy" name="game-score" value="-1">
                                     <input type="text" name="score-diy-input" id="score-diy-input" placeholder="请输入定制比分"
                                         disabled="true"></div>
@@ -189,12 +190,15 @@
                                 <div class="text-group">
                                     <input type="text" name="a1-team" id="a1-team" class="team" placeholder="队伍名称">
                                     <input type="text" name="a1-name" id="a1-name" class="team" placeholder="运动员名称">
+
                                 </div>
                                 <div class="radio-group">
                                     <input class="serve-col" type="radio" name="serve" id="a1-serve" value="a1"
                                         onclick="radioProtect(this.id)">
+                                    <label for="a1-serve"></label>
                                     <input class="receive-col" type="radio" name="receive" id="a1-receive" value="a1"
                                         onclick="radioProtect(this.id)">
+                                    <label for="a1-receive"></label>
                                 </div>
                             </div>
                             <div class="single-player" id="player-a2">
@@ -205,8 +209,10 @@
                                 <div class="radio-group">
                                     <input class="serve-col" type="radio" name="serve" id="a2-serve" value="a2"
                                         onclick="radioProtect(this.id)">
+                                        <label for="a2-serve"></label>
                                     <input class="receive-col" type="radio" name="receive" id="a2-receive" value="a2"
                                         onclick="radioProtect(this.id)">
+                                        <label for="a2-receive"></label>
                                 </div>
                             </div>
                         </section>
@@ -228,8 +234,10 @@
                                 <div class="radio-group">
                                     <input class="serve-col" type="radio" name="serve" id="b1-serve" value="b1"
                                         onclick="radioProtect(this.id)">
+                                        <label for="b1-serve"></label>
                                     <input class="receive-col" type="radio" name="receive" id="b1-receive" value="b1"
                                         onclick="radioProtect(this.id)">
+                                        <label for="b1-receive"></label>
                                 </div>
                             </div>
                             <div class="single-player" id="player-b2">
@@ -240,8 +248,10 @@
                                 <div class="radio-group">
                                     <input class="serve-col" type="radio" name="serve" id="b2-serve" value="b2"
                                         onclick="radioProtect(this.id)">
+                                        <label for="b2-serve"></label>
                                     <input class="receive-col" type="radio" name="receive" id="b2-receive" value="b2"
                                         onclick="radioProtect(this.id)">
+                                        <label for="b2-receive"></label>
                                 </div>
                             </div>
                         </section>
@@ -389,7 +399,7 @@
             </section>
         </article>
     </div>
-    <div class="event-dlg">
+    <div class="event-dlg hidden">
         <section class="dlg">
             <nav class="cancel-box"><span></span><span>
                     <h1>事件记录</h1>
@@ -397,9 +407,12 @@
             <div class="event-operation">
                 <h3 class="names" id="event-playerA"><span>陈子霖</span>&<span>程千冉</span></h3>
                 <div class="injure-panel">
-                    <button class="btn" id="p1-injure"><i class="fa fa-medkit"></i><p>医疗暂停</p></button>
+                    <button class="btn injure-stop" id="p1-injure"><i class="fa fa-medkit"></i>
+                        <p>医疗暂停</p>
+                    </button>
                     <div id="p1-injure-time" class="time-panel">
-                        <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span></p>
+                        <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span>
+                        </p>
                     </div>
                 </div>
                 <div class="btn-group">
@@ -412,9 +425,12 @@
             <div class="event-operation">
                 <h3 class="names" id="event-playerB"><span>徐小健</span>&<span>黄紫棋</span></h3>
                 <div class="injure-panel">
-                    <button class="btn" id="p2-injure"><i class="fa fa-medkit"></i><p>医疗暂停</p></button>
+                    <button class="btn injure-stop" id="p2-injure"><i class="fa fa-medkit"></i>
+                        <p>医疗暂停</p>
+                    </button>
                     <div id="p2-injure-time" class="time-panel active">
-                        <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span></p>
+                        <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span>
+                        </p>
                     </div>
                 </div>
                 <div class="btn-group">

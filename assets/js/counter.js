@@ -1,13 +1,14 @@
 let countDownByMinuteProcess;
+let countDownProcess;
 function startCountDownBySecond($countDown) {
     let countTime = parseInt($countDown.text());
-    let countDownProcess = setInterval(() => {
+    countDownProcess = setInterval(() => {
         countTime -= 1;
-        if (countTime <= 0) {
+        if (countTime == 0) {
             clearInterval(countDownProcess);
             setTimeout(() => {
-                alert("倒计时结束");
                 $(".interval-dlg").hide();
+                $(".container").removeClass("blur");
             }, 0);
 
         }
@@ -24,8 +25,9 @@ function startCountDownByMinute($countDown) {
         if (second == 0) {
             if (minute == 0) {
                 clearInterval(countDownByMinuteProcess);
-                setTimeout(()=>{
-                    alert("医疗暂停时间已用完!");
+                setTimeout(() => {
+                    $countDown.attr("disabled", true);
+                    $countDown.find(".seperator").removeClass("active");
                 })
                 return;
             }
@@ -49,6 +51,10 @@ function stopCountDownByMinute($countDown) {
 function resetCountDownBySecond($countDown, countDownSecond = 60) {
     $countDown.text(countDownSecond);
     startCountDownBySecond($countDown);
+}
+
+function stopCountDownBySecond($countDown){
+    clearInterval(countDownProcess);
 }
 
 function startCountUp($countUp) {

@@ -4,11 +4,11 @@ let currentScoreSequence = "";
 let totalScoreSequence = "";
 let playerA1, playerA2, playerB1, playerB2;
 
-let gameType, gameNum, gameScore, maxScore;
+let gameType, gameNum, gameScore, maxScore, intervalScore;
 let isSingle = true, twoScoreWin = true, changeEnd = true;
 
 let finalGame = false, final2Win = true;
-let finalScore, finalMax;
+let finalScore, finalMax, finalInterval;
 
 let intervalBetween, intervalInner;//局间间歇，局中间歇
 let intervalBetweenTime, intervalInnerTime;//间歇时间
@@ -23,9 +23,9 @@ let prevGamesScore = "", currentMatchScore = "", currentGameIndex = 0;
 let duration, p1MedicalStop, p2MedicalStop;
 let currentServeEnd = "left";
 
-let gameStart = false, matchStart = false;
+let hasInterval = false, matchStart = false;
 
-let lastGame = false;
+let isLastGame = false;
 
 let p1Injure = false, p2Injure = false;
 
@@ -54,6 +54,11 @@ const $withdrawBtn = $("#withdraw");
 const $prevGamesScore = $("#prev-games-score");
 const $matchScore = $("#match-score");
 const $gameIndex = $("#s-game-index");
+
+const $leftScoreBox = $("#left-score");
+const $rightScoreBox = $("#right-score");
+
+const $intervalCountDown = $("#interval-count-down");
 
 
 function initSettingPanel() {
@@ -137,15 +142,15 @@ function initMainPanel() {
 
 
     $eventRecordBtn.click(() => {
-        $container.toggleClass("blur");
+        $container.addClass("blur");
         $eventDlg.toggleClass("hidden");
     });
 
     //后续还会为这些按钮添加其他函数操作，因此这里使用原生js获取按钮
-    const eventButtons = document.querySelectorAll(".dlg .btn-group button");
+    const eventButtons = document.querySelectorAll(".dlg #cancel, .dlg .btn-group button");
     for (let button of eventButtons) {
         button.addEventListener("click", function () {
-            $container.toggleClass("blur");
+            $container.addClass("blur");
             $eventDlg.toggleClass("hidden");
         });
     }
@@ -193,8 +198,9 @@ function initMainPanel() {
     $("#p1-injure").click(() => {
         p1Injure = !p1Injure;
         if (p1Injure) {
-            startCountDownByMinute($("#p1-injugenere-time"));
+            startCountDownByMinute($("#p1-injure-time"));
             $("#p1-injure").addClass("active");
+            currentScoreSequence += "i";
         } else {
             stopCountDownByMinute($("#p1-injure-time"));
             $("#p1-injure").removeClass("active");
@@ -206,6 +212,7 @@ function initMainPanel() {
         if (p2Injure) {
             startCountDownByMinute($("#p2-injure-time"));
             $("#p2-injure").addClass("active");
+            currentScoreSequence += "I";
         } else {
             stopCountDownByMinute($("#p2-injure-time"));
             $("#p2-injure").removeClass("active");
@@ -213,6 +220,54 @@ function initMainPanel() {
         toggleValue($("#p2-injure p"), "医疗暂停", "继续比赛");
     });
 
+    $("#p1-retire").click(() => {
+        currentScoreSequence += "r";
+        finishGame();
+        if (currentGameIndex + 1 != gameNum) {
+            finishMatch();
+        }
+    });
+    $("#p2-retire").click(() => {
+        currentScoreSequence += "R";
+        finishGame();
+        if (currentGameIndex + 1 != gameNum) {
+            finishMatch();
+        }
+    });
+    $("#p1-yellow-card").click(() => {
+        currentScoreSequence += "w";
+    });
+    $("#p2-yellow-card").click(() => {
+        currentScoreSequence += "W";
+    });
+    $("#p1-red-card").click(() => {
+        currentScoreSequence += "f";
+        scorePlus("right");
+    });
+    $("#p2-red-card").click(() => {
+        currentScoreSequence += "F";
+        scorePlus("left");
+    });
+    $("#p1-black-card").click(() => {
+        currentScoreSequence += "d";
+        finishGame();
+        if (currentGameIndex + 1 != gameNum) {
+            finishMatch();
+        }
+    });
+    $("#p2-black-card").click(() => {
+        currentScoreSequence += "D";
+        finishGame();
+        if (currentGameIndex + 1 != gameNum) {
+            finishMatch();
+        }
+    });
+
+    $("#stop-interval").click(() => {
+        $(".container").removeClass("blur");
+        stopCountDownBySecond($("#stop-interval"));
+        $(".interval-dlg").hide();
+    })
 }
 
 function startNewGame() {
@@ -225,19 +280,23 @@ function startNewGame() {
 
         setMatchOption();
         setPlayerOption();
-        gameStart = true;
         matchStart = true;
     } else {
         getPlayerOption();
 
-        currentGameIndex += 1;
+        currentGameIndex++;
         // currentMatchScore = "0:0";
 
         setPlayerOption();
-        gameStart = true;
+        if (changeEnd) {
+            swapCourtEnd();
+        }
     }
+    hasInterval = false;
+    $prevGamesScore.empty();
     $prevGamesScore.append($("<p></p>").text("0:0"));
     $matchScore.text(currentMatchScore);
+    
 
     $withdrawBtn.attr("disabled", true);
     $(".input-container").hide();
@@ -256,11 +315,15 @@ function getMatchOption() {
         isSingle = false;
     }
     gameNum = parseInt($("input[name='game-num']:checked").val());
+    if (gameNum == 1) {
+        isLastGame = true;
+    }
 
     gameScore = parseInt($("input[name='game-score']:checked").val());
     if (gameScore == -1) {
         gameScore = parseInt($("input[name='score-diy-input']").val());
     }
+    intervalScore = Math.ceil(gameScore / 2);
     twoScoreWin = $("input[name='two-win']").is(':checked');
     if (twoScoreWin) {
         maxScore = parseInt($("input[name='max-score']").val());
@@ -273,11 +336,12 @@ function getMatchOption() {
     final2Win = $("input[name='final-2win']").is(':checked');
     finalScore = parseInt($("input[name='final-score']").val());
     finalMax = parseInt($("input[name='final-max']").val());
+    finalInterval = Math.ceil(finalScore / 2);
 
     intervalInner = $("input[name='interval-inner-on']").is(':checked');
     intervalInnerTime = parseInt($("input[name='interval-inner']").val());
     intervalBetween = $("input[name='interval-between-on']").is(':checked');
-    intervalInnerTime = parseInt($("input[name='interval-between']").val());
+    intervalBetweenTime = parseInt($("input[name='interval-between']").val());
 
     courtIndex = parseInt($("input[name='court-index']").val());
     competitionName = $("input[name='competition-name']").val();
@@ -300,7 +364,7 @@ function getPlayerOption() {
 // Set only once for each match
 function setMatchOption() {
     $("#s-game-num").text(gameNum);
-    $("s-game-score").text(gameScore);
+    $("#s-score").text(gameScore);
     if (changeEnd) {
         $("#s-change-end").show();
     } else {
@@ -346,6 +410,8 @@ function setPlayerOption() {
         initServeEnd = "left";
         rotateServeIcon(0, "left");
         currentServeEnd = "left";
+        $leftScoreBox.addClass("serve-score");
+        $rightScoreBox.removeClass("serve-score");
         $leftPlayerContainer.html(playerA2.outputHtml() + playerA1.outputHtml());
     } else if (initServe == 'a2') {
         serveOrder[0] = 2;
@@ -354,6 +420,8 @@ function setPlayerOption() {
         initServeEnd = "left";
         rotateServeIcon(0, "left");
         currentServeEnd = "left";
+        $leftScoreBox.addClass("serve-score");
+        $rightScoreBox.removeClass("serve-score");
         $leftPlayerContainer.html(playerA1.outputHtml() + playerA2.outputHtml());
     } else if (initServe == 'b1') {
         if (isSingle) {
@@ -366,6 +434,8 @@ function setPlayerOption() {
         initServeEnd = "right";
         rotateServeIcon(0, "right");
         currentServeEnd = "right";
+        $rightScoreBox.addClass("serve-score");
+        $leftScoreBox.removeClass("serve-score");
         $rightPlayerContainer.html(playerB1.outputHtml() + playerB2.outputHtml());
     } else if (initServe == 'b2') {
         serveOrder[0] = 4;
@@ -374,6 +444,8 @@ function setPlayerOption() {
         initServeEnd = "right";
         rotateServeIcon(0, "right");
         currentServeEnd = "right";
+        $rightScoreBox.addClass("serve-score");
+        $leftScoreBox.removeClass("serve-score");
         $rightPlayerContainer.html(playerB2.outputHtml() + playerB1.outputHtml());
     }
 
@@ -439,31 +511,18 @@ function scorePlus(scoreEnd) {
     if (scoreEnd == "left") {
         anotherEnd = "right";
         if (scoreEnd == currentServeEnd) {
-            $leftPlayerContainer.fadeOut(500, () => {
-                swapContent($leftPlayerContainer);
-                $leftPlayerContainer.fadeIn(500);
-
-            });
+            swapLeftContent();
             if (isSingle) {
-                $rightPlayerContainer.fadeOut(500, () => {
-                    swapContent($rightPlayerContainer);
-                    $rightPlayerContainer.fadeIn(500);
-                });
+                swapRightContent();
             }
         }
         currentScoreSequence += "0";
     } else if (scoreEnd == "right") {
         anotherEnd = "left";
         if (scoreEnd == currentServeEnd) {
-            $rightPlayerContainer.fadeOut(500, () => {
-                swapContent($rightPlayerContainer);
-                $rightPlayerContainer.fadeIn(500);
-            });
+            swapRightContent();
             if (isSingle) {
-                $leftPlayerContainer.fadeOut(500, () => {
-                    swapContent($leftPlayerContainer);
-                    $leftPlayerContainer.fadeIn(500);
-                });
+                swapLeftContent();
             }
         }
         currentScoreSequence += "1";
@@ -476,18 +535,11 @@ function scorePlus(scoreEnd) {
     //Set score
     const currentScore = parseInt(scoreBody.text()) + 1;
     scoreBody.text(currentScore);
-
+    const anotherScore = parseInt(scoreAnother.text());
     if (isSingle) {
-        const anotherScore = parseInt(scoreAnother.text());
         if (scoreEnd != currentServeEnd && (currentScore + anotherScore) % 2 == 1) {
-            $rightPlayerContainer.fadeOut(500, () => {
-                swapContent($rightPlayerContainer);
-                $rightPlayerContainer.fadeIn(500);
-            });
-            $leftPlayerContainer.fadeOut(500, () => {
-                swapContent($leftPlayerContainer);
-                $leftPlayerContainer.fadeIn(500);
-            });
+            swapRightContent();
+            swapLeftContent();
         }
     }
 
@@ -517,6 +569,22 @@ function scorePlus(scoreEnd) {
         });
     }
     console.log(currentScoreSequence);
+    if ((currentScore >= gameScore && currentScore - anotherScore == (twoScoreWin ? 2 : 0)) || currentScore == maxScore ||
+        (finalGame && isLastGame && ((currentScore >= finalScore && currentScore - anotherScore == (final2Win ? 2 : 0)) || currentScore == finalMax))) {
+        finishGame();
+    }
+    if (!hasInterval && ((currentScore == intervalScore && intervalInner) ||
+        (finalGame && isLastGame && currentScore == finalInterval && intervalInner))) {
+        resetCountDownBySecond($intervalCountDown, intervalInnerTime);
+        hasInterval = true;
+        $(".interval-dlg").show();
+        $(".container").addClass("blur");
+        startCountDownBySecond($intervalCountDown);
+    }
+
+    if (isLastGame && ((!finalGame && currentScore == intervalScore) || (finalGame && currentScore == finalInterval)) && changeEnd) {
+        swapCourtEnd();
+    }
     currentServeEnd = scoreEnd;
     $withdrawBtn.attr("disabled", false);
 }
@@ -534,51 +602,40 @@ function withdraw() {
     let prevScoreBody;
     console.log(serveOrderIndex);
     if (curServeEnd == '0') {
-        scoreBody = $("#left-score");
+        scoreBody = $leftScoreBox;
         if (curServeEnd == prevServeEnd) {
             prevScoreBody = scoreBody;
         } else {
-            prevScoreBody = $("#right-score");
+            prevScoreBody = $rightScoreBox;
             serveOrderIndex = (serveOrderIndex - 1) % 4;
         }
     } else {
-        scoreBody = $("#right-score");
+        scoreBody = $rightScoreBox;
         if (curServeEnd == prevServeEnd) {
             prevScoreBody = scoreBody;
         } else {
-            prevScoreBody = $("#left-score");
+            prevScoreBody = $leftScoreBox;
             serveOrderIndex = (serveOrderIndex - 1) % 4;
         }
     }
     console.log(serveOrderIndex);
     //改变得分
     let currentScore = parseInt(scoreBody.text()) - 1;
+    
     let prevScore = parseInt(prevScoreBody.text());
     scoreBody.text(currentScore);
 
     if (isSingle) {
-        if (curServeEnd == prevServeEnd || (curServeEnd != prevServeEnd && (parseInt($("#left-score")) + parseInt($("#right-score"))) % 2 == 0)) {
-            $rightPlayerContainer.fadeOut(500, () => {
-                swapContent($rightPlayerContainer);
-                $rightPlayerContainer.fadeIn(500);
-            });
-            $leftPlayerContainer.fadeOut(500, () => {
-                swapContent($leftPlayerContainer);
-                $leftPlayerContainer.fadeIn(500);
-            });
+        if (curServeEnd == prevServeEnd || (curServeEnd != prevServeEnd && (parseInt($leftScoreBox) + parseInt($rightScoreBox)) % 2 == 0)) {
+            swapRightContent();
+            swapLeftContent();
         }
     } else {
         if (curServeEnd == prevServeEnd) {
             if (curServeEnd == '1') {
-                $rightPlayerContainer.fadeOut(500, () => {
-                    swapContent($rightPlayerContainer);
-                    $rightPlayerContainer.fadeIn(500);
-                });
+                swapRightContent();
             } else {
-                $leftPlayerContainer.fadeOut(500, () => {
-                    swapContent($leftPlayerContainer);
-                    $leftPlayerContainer.fadeIn(500);
-                });
+                swapLeftContent();
             }
         }
     }
@@ -594,6 +651,10 @@ function withdraw() {
     scoreBody.removeClass("serve-score");
     prevScoreBody.addClass("serve-score");
 
+    if (isLastGame && ((!finalGame && currentScore == intervalScore - 1) || (finalGame && currentScore == finalInterval - 1)) && changeEnd) {
+        swapCourtEnd();
+    }
+
     rotateServeIcon(prevScore, prevServeEnd);
     const $singleScore = $scoreScrollPanel.children().eq(currentScoreSequence.length);
     $singleScore.children().children('p').text("");
@@ -604,24 +665,41 @@ function withdraw() {
         });
     }
 }
+function swapCourtEnd() {
+    swapContent($leftPlayerContainer);
+    swapContent($rightPlayerContainer);
+    const leftPlayerInfo = $leftPlayerContainer.html();
+    const rightPlayerInfo = $rightPlayerContainer.html();
 
+    const leftScoreInfo = $leftScoreBox.text();
+    const rightScoreInfo = $rightScoreBox.text();
+
+    $leftPlayerContainer.html(rightPlayerInfo);
+    $rightPlayerContainer.html(leftPlayerInfo);
+
+    $leftScoreBox.text(rightScoreInfo);
+    $rightScoreBox.text(leftScoreInfo);
+    $leftScoreBox.toggleClass("serve-score");
+    $rightScoreBox.toggleClass("serve-score");
+
+    currentServeEnd = (currentServeEnd == "left") ? "right" : "left";
+    rotateServeIcon((currentServeEnd == "left") ? leftScoreInfo : rightScoreInfo, currentServeEnd);
+
+    currentScoreSequence = reverseScoreSequence(currentScoreSequence);
+
+}
 
 function finishGame() {
-    var ok = confirm("确定结束当前比赛？");
+    var ok = confirm("确定结束该局比赛？");
     if (ok) {
-        totalScoreSequence += currentScoreSequence + ";";
-        currentGameIndex++;
-        if (currentGameIndex == gameNum) {
-            lastGame == true;
-        }
         if (totalScoreSequence.substr(-1, 1) == '0') {
             currentMatchScore = swapScore((parseInt(currentMatchScore.split(":")[0]) + 1) + ":" + currentMatchScore.split(":")[1]);
         } else {
             currentMatchScore = swapScore(currentMatchScore.split(":")[0] + ":" + (parseInt(currentMatchScore.split(":")[1]) + 1));
         }
 
-        const leftScore = $("#left-score");
-        const rightScore = $("#right-score");
+        const leftScore = $leftScoreBox;
+        const rightScore = $rightScoreBox;
 
         prevGamesScore += leftScore + ":" + rightScore;
 
@@ -629,13 +707,48 @@ function finishGame() {
         $prevGamesScore.empty();
         for (let gameScore_ of prevGamesScore.split(" ")) {
             newPrevGamesScore += swapScore(gameScore_);
-            $prevGamesScore.append(("p").text(swapScore(gameScore_)));
+            $prevGamesScore.append($("<p></p>").text(swapScore(gameScore_)));
         }
         prevGamesScore = newPrevGamesScore;
+        if (currentGameIndex % 2 == 1 || isLastGame)
+            currentScoreSequence = reverseScoreSequence(currentScoreSequence);
+        totalScoreSequence += currentScoreSequence + ";";
+        if (isLastGame) {
+            finishMatch();
+        }
 
+        currentGameIndex++;
+        if (currentGameIndex + 1 == gameNum) {
+            isLastGame == true;
 
+        }
 
+        if (intervalBetween) {
+            resetCountDownBySecond($intervalCountDown, intervalBetweenTime);
+            $(".interval-dlg").show();
+            startCountDownBySecond($intervalCountDown);
+            setTimeout(() => {
+                startNewGame();
+            }, 0);
+        }
 
+    }
+}
+
+function finishMatch() {
+    var ok = confirm("确定结束该场比赛？");
+    if (ok) {
+        let matchInfo = {
+            players: {
+                playerA: (isSingle) ? [playerA1, playerA2] : [playerA1],
+                playerB: (isSingle) ? [playerB1, playerB2] : [playerB1]
+            },
+            gameScores: totalScoreSequence,
+            matchScores: currentMatchScore,
+            time: $("#time-use").html().replace(/<.*>/g, "")
+        }
+
+        localStorage[matchId] = JSON.stringify(matchInfo);
     }
 }
 function swapContent($element) {
@@ -644,6 +757,21 @@ function swapContent($element) {
     let $secondChild = $children[1];
     $element.empty();
     $element.append($secondChild).append($firstChild);
+}
+
+function swapLeftContent(){
+    $leftPlayerContainer.fadeOut(500, () => {
+        swapContent($leftPlayerContainer);
+        $leftPlayerContainer.fadeIn(500);
+    });
+}
+
+
+function swapRightContent(){
+    $rightPlayerContainer.fadeOut(500, () => {
+        swapContent($rightPlayerContainer);
+        $rightPlayerContainer.fadeIn(500);
+    });
 }
 
 function rotateServeIcon(currentScore, serveEnd) {
@@ -771,7 +899,7 @@ function generateScoreTableColumn(datas) {
 function toggleValue($element, value1, value2) {
     if ($element.text() == value1) {
         $element.text(value2);
-    }else{
+    } else {
         $element.text() == value2;
         $element.text(value1);
     }
@@ -784,6 +912,23 @@ function toggleValue($element, value1, value2) {
 function swapScore(scoreStr) {
     let scores = scoreStr.split(":");
     return scores[1] + ":" + scores[0];
+}
+
+function reverseScoreSequence(scoreSeq) {
+    scoreSeq = swapLetter(scoreSeq, '0', '1');
+    scoreSeq = swapLetter(scoreSeq, 'i', 'I');//Injury
+    scoreSeq = swapLetter(scoreSeq, 'w', 'W');//Warning
+    scoreSeq = swapLetter(scoreSeq, 'f', 'F');//Fault
+    scoreSeq = swapLetter(scoreSeq, 'r', 'R');//Retire
+    scoreSeq = swapLetter(scoreSeq, 'd', 'D');//Disqualify
+    return scoreSeq;
+}
+
+function swapLetter(str, l1, l2) {
+    str = str.replace(new RegExp(l1,'g'), '#');
+    str = str.replace(new RegExp(l2,'g'), l1);
+    str = str.replace(new RegExp('#','g'), l2);
+    return str;
 }
 
 class Player {

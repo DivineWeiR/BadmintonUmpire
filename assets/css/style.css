@@ -533,6 +533,16 @@ h1.serve-score {
     animation: blink 1s infinite;
 }
 
+.injure-stop:disabled {
+    background-color: #DDDDDD;
+    color: #999999;
+    border-color: #AAAAAA;
+}
+
+.injure-stop:disabled i {
+    color: #999999;
+}
+
 .cancel-box {
     position: relative;
     display: flex;
@@ -824,7 +834,8 @@ h1.serve-score {
     width: 100%;
     text-align: center;
 }
-#counter{
+
+#counter {
     margin-top: 1em;
     margin-bottom: 2em;
     margin: auto;
@@ -836,7 +847,7 @@ h1.serve-score {
     background: #c5f8de;
 }
 
-.interval-count-down{
+.interval-count-down {
     font-size: 48px;
     color: #666666;
     font-family: digit;
@@ -844,8 +855,8 @@ h1.serve-score {
     position: relative;
 }
 
-.interval-count-down{
-    padding:0 10px;
+.interval-count-down {
+    padding: 0 10px;
 }
 
 @media (max-width: 599px) {
