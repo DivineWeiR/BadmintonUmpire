@@ -23,7 +23,7 @@ let prevGamesScore = "", currentMatchScore = "", currentGameIndex = 0;
 let duration, p1MedicalStop, p2MedicalStop;
 let currentServeEnd = "left";
 
-let hasInterval = false, matchStart = false;
+let hasInterval = false, matchStart = false, hasChangedEnd = false;
 
 let isLastGame = false;
 
@@ -292,11 +292,12 @@ function startNewGame() {
             swapCourtEnd();
         }
     }
+    hasChangedEnd = false;
     hasInterval = false;
     $prevGamesScore.empty();
     $prevGamesScore.append($("<p></p>").text("0:0"));
     $matchScore.text(currentMatchScore);
-    
+
 
     $withdrawBtn.attr("disabled", true);
     $(".input-container").hide();
@@ -569,8 +570,8 @@ function scorePlus(scoreEnd) {
         });
     }
     console.log(currentScoreSequence);
-    if ((currentScore >= gameScore && currentScore - anotherScore == (twoScoreWin ? 2 : 0)) || currentScore == maxScore ||
-        (finalGame && isLastGame && ((currentScore >= finalScore && currentScore - anotherScore == (final2Win ? 2 : 0)) || currentScore == finalMax))) {
+    if ((currentScore >= gameScore && currentScore - anotherScore >= (twoScoreWin ? 2 : 0)) || currentScore == maxScore ||
+        (finalGame && isLastGame && ((currentScore >= finalScore && currentScore - anotherScore >= (final2Win ? 2 : 0)) || currentScore == finalMax))) {
         finishGame();
     }
     if (!hasInterval && ((currentScore == intervalScore && intervalInner) ||
@@ -581,11 +582,12 @@ function scorePlus(scoreEnd) {
         $(".container").addClass("blur");
         startCountDownBySecond($intervalCountDown);
     }
-
-    if (isLastGame && ((!finalGame && currentScore == intervalScore) || (finalGame && currentScore == finalInterval)) && changeEnd) {
-        swapCourtEnd();
-    }
     currentServeEnd = scoreEnd;
+    if (!hasChangedEnd && isLastGame && ((!finalGame && currentScore == intervalScore) || (finalGame && currentScore == finalInterval)) && changeEnd) {
+        swapCourtEnd();
+        setTimeout(() => { alert("请双方运动员交换场地！") }, 0);
+        hasChangedEnd = true;
+    }
     $withdrawBtn.attr("disabled", false);
 }
 
@@ -621,7 +623,7 @@ function withdraw() {
     console.log(serveOrderIndex);
     //改变得分
     let currentScore = parseInt(scoreBody.text()) - 1;
-    
+
     let prevScore = parseInt(prevScoreBody.text());
     scoreBody.text(currentScore);
 
@@ -653,6 +655,7 @@ function withdraw() {
 
     if (isLastGame && ((!finalGame && currentScore == intervalScore - 1) || (finalGame && currentScore == finalInterval - 1)) && changeEnd) {
         swapCourtEnd();
+        hasChangedEnd = false;
     }
 
     rotateServeIcon(prevScore, prevServeEnd);
@@ -683,7 +686,7 @@ function swapCourtEnd() {
     $rightScoreBox.toggleClass("serve-score");
 
     currentServeEnd = (currentServeEnd == "left") ? "right" : "left";
-    rotateServeIcon((currentServeEnd == "left") ? leftScoreInfo : rightScoreInfo, currentServeEnd);
+    rotateServeIcon((currentServeEnd == "left") ? rightScoreInfo : leftScoreInfo, currentServeEnd);
 
     currentScoreSequence = reverseScoreSequence(currentScoreSequence);
 
@@ -692,21 +695,22 @@ function swapCourtEnd() {
 function finishGame() {
     var ok = confirm("确定结束该局比赛？");
     if (ok) {
-        if (totalScoreSequence.substr(-1, 1) == '0') {
+        const lastStatus = currentScoreSequence.substr(-1, 1);
+        if (lastStatus == '0' || lastStatus == 'R' || lastStatus == 'W') {
             currentMatchScore = swapScore((parseInt(currentMatchScore.split(":")[0]) + 1) + ":" + currentMatchScore.split(":")[1]);
-        } else {
+        } else if (lastStatus == '1' || lastStatus == 'r' || lastStatus == 'w') {
             currentMatchScore = swapScore(currentMatchScore.split(":")[0] + ":" + (parseInt(currentMatchScore.split(":")[1]) + 1));
         }
 
-        const leftScore = $leftScoreBox;
-        const rightScore = $rightScoreBox;
+        const leftScore = $leftScoreBox.text();
+        const rightScore = $rightScoreBox.text();
 
         prevGamesScore += leftScore + ":" + rightScore;
 
         let newPrevGamesScore = "";
         $prevGamesScore.empty();
         for (let gameScore_ of prevGamesScore.split(" ")) {
-            newPrevGamesScore += swapScore(gameScore_);
+            newPrevGamesScore += swapScore(gameScore_) + " ";
             $prevGamesScore.append($("<p></p>").text(swapScore(gameScore_)));
         }
         prevGamesScore = newPrevGamesScore;
@@ -723,7 +727,7 @@ function finishGame() {
 
         }
 
-        if (intervalBetween) {
+        if (intervalBetween && !isLastGame) {
             resetCountDownBySecond($intervalCountDown, intervalBetweenTime);
             $(".interval-dlg").show();
             startCountDownBySecond($intervalCountDown);
@@ -732,23 +736,33 @@ function finishGame() {
             }, 0);
         }
 
+    } else {
+        withdraw();
     }
 }
 
 function finishMatch() {
     var ok = confirm("确定结束该场比赛？");
     if (ok) {
+        stopCountUp();
         let matchInfo = {
             players: {
                 playerA: (isSingle) ? [playerA1, playerA2] : [playerA1],
                 playerB: (isSingle) ? [playerB1, playerB2] : [playerB1]
             },
-            gameScores: totalScoreSequence,
+            gameScores: prevGamesScore,
             matchScores: currentMatchScore,
-            time: $("#time-use").html().replace(/<.*>/g, "")
+            time: $("#time-use").text()
         }
 
         localStorage[matchId] = JSON.stringify(matchInfo);
+        let matchResult = "比赛结束, 用时:" + matchInfo.time + "\n";
+        matchResult += playerA1.name + (playerA2.name == '' ? "" : ("/" + playerA2.name)) + " VS ";
+        matchResult += playerB1.name + (playerB2.name == '' ? "" : ("/" + playerB2.name)) + "\n";
+        matchResult += matchInfo.matchScores + "\n";
+        matchResult += matchInfo.gameScores;
+        alert(matchResult);
+        window.location.href = "index.html";
     }
 }
 function swapContent($element) {
@@ -759,7 +773,7 @@ function swapContent($element) {
     $element.append($secondChild).append($firstChild);
 }
 
-function swapLeftContent(){
+function swapLeftContent() {
     $leftPlayerContainer.fadeOut(500, () => {
         swapContent($leftPlayerContainer);
         $leftPlayerContainer.fadeIn(500);
@@ -767,7 +781,7 @@ function swapLeftContent(){
 }
 
 
-function swapRightContent(){
+function swapRightContent() {
     $rightPlayerContainer.fadeOut(500, () => {
         swapContent($rightPlayerContainer);
         $rightPlayerContainer.fadeIn(500);
@@ -925,9 +939,9 @@ function reverseScoreSequence(scoreSeq) {
 }
 
 function swapLetter(str, l1, l2) {
-    str = str.replace(new RegExp(l1,'g'), '#');
-    str = str.replace(new RegExp(l2,'g'), l1);
-    str = str.replace(new RegExp('#','g'), l2);
+    str = str.replace(new RegExp(l1, 'g'), '#');
+    str = str.replace(new RegExp(l2, 'g'), l1);
+    str = str.replace(new RegExp('#', 'g'), l2);
     return str;
 }
 

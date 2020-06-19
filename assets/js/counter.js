@@ -1,5 +1,6 @@
 let countDownByMinuteProcess;
 let countDownProcess;
+let countUpProcess;
 function startCountDownBySecond($countDown) {
     let countTime = parseInt($countDown.text());
     countDownProcess = setInterval(() => {
@@ -59,7 +60,7 @@ function stopCountDownBySecond($countDown){
 
 function startCountUp($countUp) {
     let start = new Date();
-    let countUpProcess = setInterval(() => {
+    countUpProcess = setInterval(() => {
         let now = new Date();
         let gap = now - start;
         let second = parseInt(gap / 1000 % 60);
@@ -80,4 +81,8 @@ function startCountUp($countUp) {
         $countUp.append($("<span></span>").text(second));
         $countUp.append($("<span></span>").text("秒"));
     }, 1000);
+}
+
+function stopCountUp(){
+    clearInterval(countUpProcess);
 }
