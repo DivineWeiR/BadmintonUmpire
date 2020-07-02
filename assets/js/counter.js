@@ -59,7 +59,7 @@ function stopCountDownBySecond($countDown){
 }
 
 function startCountUp($countUp) {
-    let start = new Date();
+    const start = new Date();
     countUpProcess = setInterval(() => {
         let now = new Date();
         let gap = now - start;
@@ -67,6 +67,7 @@ function startCountUp($countUp) {
         let minute = parseInt(gap / 1000 / 60 % 60);
         let hour = parseInt(gap / 1000 / 3600 % 24);
         let day = parseInt(gap / 1000 / 24400);
+        console.log([day,hour,minute,second]);
         $countUp.empty();
         if (day > 0) {
             $countUp.append($("<span></span>").text(day));

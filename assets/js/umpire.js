@@ -12,6 +12,7 @@ let finalScore, finalMax, finalInterval;
 
 let intervalBetween, intervalInner;//局间间歇，局中间歇
 let intervalBetweenTime, intervalInnerTime;//间歇时间
+let inInterval = false;
 
 let courtIndex = "", competitionName = "", matchId = "";
 let referee = "", umpire = "", serviceJudge = "";
@@ -21,13 +22,15 @@ let initServe, initReceive, initServeEnd;
 
 let prevGamesScore = "", currentMatchScore = "", currentGameIndex = 0;
 let duration, p1MedicalStop, p2MedicalStop;
-let currentServeEnd = "left";
 
-let hasInterval = false, matchStart = false, hasChangedEnd = false;
+let matchStart = false;
 
 let isLastGame = false;
 
 let p1Injure = false, p2Injure = false;
+
+//调试时使用
+let debugging = true;
 
 const $leftPlayerContainer = $("#left-player");
 const $rightPlayerContainer = $("#right-player");
@@ -199,11 +202,13 @@ function initMainPanel() {
         p1Injure = !p1Injure;
         if (p1Injure) {
             startCountDownByMinute($("#p1-injure-time"));
-            $("#p1-injure").addClass("active");
+            inInterval = true;
+            $("#p1-injure-time").addClass("active");
             currentScoreSequence += "i";
         } else {
             stopCountDownByMinute($("#p1-injure-time"));
-            $("#p1-injure").removeClass("active");
+            inInterval = false;
+            $("#p1-injure-time").removeClass("active");
         }
         toggleValue($("#p1-injure p"), "医疗暂停", "继续比赛");
     });
@@ -211,11 +216,13 @@ function initMainPanel() {
         p2Injure = !p2Injure;
         if (p2Injure) {
             startCountDownByMinute($("#p2-injure-time"));
-            $("#p2-injure").addClass("active");
+            inInterval = true;
+            $("#p2-injure-time").addClass("active");
             currentScoreSequence += "I";
         } else {
             stopCountDownByMinute($("#p2-injure-time"));
-            $("#p2-injure").removeClass("active");
+            inInterval = false;
+            $("#p2-injure-time").removeClass("active");
         }
         toggleValue($("#p2-injure p"), "医疗暂停", "继续比赛");
     });
@@ -266,14 +273,20 @@ function initMainPanel() {
     $("#stop-interval").click(() => {
         $(".container").removeClass("blur");
         stopCountDownBySecond($("#stop-interval"));
+        inInterval = false;
         $(".interval-dlg").hide();
     })
 }
 
 function startNewGame() {
+    getPlayerOption();
+    if (initReceive == undefined || initServe == undefined) {
+        alert("请选择发接发球员！");
+        return;
+    }
+
     if (!matchStart) {
         getMatchOption();
-        getPlayerOption();
 
         currentGameIndex = 0;
         currentMatchScore = "0:0";
@@ -281,11 +294,12 @@ function startNewGame() {
         setMatchOption();
         setPlayerOption();
         matchStart = true;
-    } else {
-        getPlayerOption();
+        startCountUp($("#time-use"));
 
+        $prevGamesScore.empty();
+        $prevGamesScore.append($("<p></p>").text("0:0"));
+    } else {
         currentGameIndex++;
-        // currentMatchScore = "0:0";
 
         setPlayerOption();
         if (changeEnd) {
@@ -294,15 +308,13 @@ function startNewGame() {
     }
     hasChangedEnd = false;
     hasInterval = false;
-    $prevGamesScore.empty();
-    $prevGamesScore.append($("<p></p>").text("0:0"));
     $matchScore.text(currentMatchScore);
 
 
     $withdrawBtn.attr("disabled", true);
     $(".input-container").hide();
     $gameIndex.text(currentGameIndex + 1);
-    startCountUp($("#time-use"));
+
 
 }
 
@@ -408,9 +420,8 @@ function setPlayerOption() {
             serveOrder[2] = 2;
         }
         playerA1.setServe("S");
-        initServeEnd = "left";
-        rotateServeIcon(0, "left");
-        currentServeEnd = "left";
+        initServeEnd = "0";
+        rotateServeIcon(0, "0");
         $leftScoreBox.addClass("serve-score");
         $rightScoreBox.removeClass("serve-score");
         $leftPlayerContainer.html(playerA2.outputHtml() + playerA1.outputHtml());
@@ -418,9 +429,8 @@ function setPlayerOption() {
         serveOrder[0] = 2;
         serveOrder[2] = 1;
         playerA2.setServe("S");
-        initServeEnd = "left";
-        rotateServeIcon(0, "left");
-        currentServeEnd = "left";
+        initServeEnd = "0";
+        rotateServeIcon(0, "0");
         $leftScoreBox.addClass("serve-score");
         $rightScoreBox.removeClass("serve-score");
         $leftPlayerContainer.html(playerA1.outputHtml() + playerA2.outputHtml());
@@ -432,9 +442,8 @@ function setPlayerOption() {
             serveOrder[2] = 4;
         }
         playerB1.setServe("S");
-        initServeEnd = "right";
-        rotateServeIcon(0, "right");
-        currentServeEnd = "right";
+        initServeEnd = "1";
+        rotateServeIcon(0, "1");
         $rightScoreBox.addClass("serve-score");
         $leftScoreBox.removeClass("serve-score");
         $rightPlayerContainer.html(playerB1.outputHtml() + playerB2.outputHtml());
@@ -442,9 +451,8 @@ function setPlayerOption() {
         serveOrder[0] = 4;
         serveOrder[2] = 3;
         playerB2.setServe("S");
-        initServeEnd = "right";
-        rotateServeIcon(0, "right");
-        currentServeEnd = "right";
+        initServeEnd = "1";
+        rotateServeIcon(0, "1");
         $rightScoreBox.addClass("serve-score");
         $leftScoreBox.removeClass("serve-score");
         $rightPlayerContainer.html(playerB2.outputHtml() + playerB1.outputHtml());
@@ -508,94 +516,78 @@ function showPlayerSettingPanelOnly() {
 
 // score function
 function scorePlus(scoreEnd) {
-    let anotherEnd = "";
-    if (scoreEnd == "left") {
-        anotherEnd = "right";
-        if (scoreEnd == currentServeEnd) {
-            swapLeftContent();
-            if (isSingle) {
-                swapRightContent();
-            }
-        }
+    if (scoreEnd == "0") {
         currentScoreSequence += "0";
-    } else if (scoreEnd == "right") {
-        anotherEnd = "left";
-        if (scoreEnd == currentServeEnd) {
-            swapRightContent();
-            if (isSingle) {
-                swapLeftContent();
-            }
-        }
+    } else if (scoreEnd == "1") {
         currentScoreSequence += "1";
     }
-    const scoreBody = $("#" + scoreEnd + "-score");
-    const scoreAnother = $("#" + anotherEnd + "-score");
-
-
-
-    //Set score
-    const currentScore = parseInt(scoreBody.text()) + 1;
-    scoreBody.text(currentScore);
-    const anotherScore = parseInt(scoreAnother.text());
-    if (isSingle) {
-        if (scoreEnd != currentServeEnd && (currentScore + anotherScore) % 2 == 1) {
-            swapRightContent();
-            swapLeftContent();
-        }
+    const scores = updateMainScore(scoreEnd, true);
+    const serveScore = scores.serve;
+    const receiveScore = scores.receive;
+    if (isLastGame && ((!finalGame && serveScore == intervalScore && receiveScore < intervalScore) || (finalGame && currentScore == finalInterval && receiveScore < finalInterval)) && changeEnd) {
+        scoreEnd = swapCourtEnd();
+        setTimeout(() => { alert("请双方运动员交换场地！") }, 0);
     }
 
-    //Set rotate style of scoreboard
-    if (scoreBody.css("transform") == "matrix3d(1, 0, 0, 0, 0, 1, -2.44929e-16, 0, 0, 2.44929e-16, 1, 0, 0, 0, 0, 1)" ||
-        scoreBody.css("transform") == "rotateX(360deg)") {
-        scoreBody.css("transform", "");
-    } else {
-        scoreBody.css("transform", "rotateX(360deg)");
-    }
+    const currentServeEnd = currentScoreSequence.substr(-1, 1);
+    const prevServeEnd = currentScoreSequence.length > 1 ? currentScoreSequence.substr(-2, 1) : initServeEnd;
 
-    //Set serve color of scoreboard
-    scoreBody.addClass("serve-score");
-    scoreAnother.removeClass("serve-score");
+    updateCourt(currentServeEnd, prevServeEnd, true);
 
-    //Set serve-icon direction
-    rotateServeIcon(currentScore, scoreEnd);
-    if (scoreEnd != currentServeEnd) {
-        serveOrderIndex = (serveOrderIndex + 1) % 4;
-    }
-    const $singleScore = $scoreScrollPanel.children().eq(currentScoreSequence.length - 1);
-    $singleScore.children().eq(serveOrder[serveOrderIndex] - 1).children('p').text(currentScore);
-    if ($singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth / 2 >= 0) {
-        // let scrollGap = $singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth;
-        $scoreScrollContainer.animate({
-            scrollLeft: $singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth / 2
-        });
-    }
-    console.log(currentScoreSequence);
-    if ((currentScore >= gameScore && currentScore - anotherScore >= (twoScoreWin ? 2 : 0)) || currentScore == maxScore ||
-        (finalGame && isLastGame && ((currentScore >= finalScore && currentScore - anotherScore >= (final2Win ? 2 : 0)) || currentScore == finalMax))) {
+
+    updateServeTable(scoreEnd, true);
+    if ((!finalGame || !isLastGame) && (serveScore >= gameScore && (!twoScoreWin || (serveScore - receiveScore >= 2 || serveScore == maxScore))) ||
+        ((finalGame && isLastGame) && (serveScore >= finalScore && (!final2Win || (serveScore - receiveScore >= 2 || serveScore == finalMax))))) {
         finishGame();
     }
-    if (!hasInterval && ((currentScore == intervalScore && intervalInner) ||
-        (finalGame && isLastGame && currentScore == finalInterval && intervalInner))) {
+    if (intervalInner && (((!finalGame || !isLastGame) && serveScore == intervalScore && receiveScore < intervalScore) || (finalGame && isLastGame && serveScore == finalInterval && receiveScore < intervalScore))) {
         resetCountDownBySecond($intervalCountDown, intervalInnerTime);
-        hasInterval = true;
         $(".interval-dlg").show();
         $(".container").addClass("blur");
+        inInterval = true;
         startCountDownBySecond($intervalCountDown);
     }
-    currentServeEnd = scoreEnd;
-    if (!hasChangedEnd && isLastGame && ((!finalGame && currentScore == intervalScore) || (finalGame && currentScore == finalInterval)) && changeEnd) {
-        swapCourtEnd();
-        setTimeout(() => { alert("请双方运动员交换场地！") }, 0);
-        hasChangedEnd = true;
-    }
+
+
+    updateServeInfo(scoreEnd);
     $withdrawBtn.attr("disabled", false);
 }
-
 function withdraw() {
     let curServeEnd = currentScoreSequence.substr(-1, 1);
     let prevServeEnd = currentScoreSequence.substr(-2, 1);
     currentScoreSequence = currentScoreSequence.substr(0, currentScoreSequence.length - 1);
-    console.log(currentServeEnd, currentScoreSequence);
+    if (currentScoreSequence.length == 0) {
+        $withdrawBtn.attr("disabled", true);
+    }
+    const scores = updateMainScore(curServeEnd, false);
+    let serveScore;
+    let receiveScore;
+    if (curServeEnd == prevServeEnd) {
+        serveScore = scores.serve;
+        receiveScore = scores.receive;
+    } else {
+        serveScore = scores.receive;
+        receiveScore = scores.serve;
+    }
+    if (isLastGame && ((!finalGame && serveScore == intervalScore - 1 && receiveScore < intervalScore) || (finalGame && currentScore == finalInterval - 1 && receiveScore < finalInterval)) && changeEnd) {
+        swapCourtEnd();
+        prevServeEnd = reverseScoreSequence(prevServeEnd);
+        curServeEnd = reverseScoreSequence(curServeEnd);
+    }
+    updateCourt(curServeEnd, prevServeEnd, false);
+    updateServeTable(curServeEnd, false);
+    updateServeInfo(prevServeEnd);
+    if (curServeEnd != prevServeEnd) {
+        serveOrderIndex = (serveOrderIndex - 1) % 4;
+    }
+}
+
+
+function withdraw_old() {
+    let curServeEnd = currentScoreSequence.substr(-1, 1);
+    let prevServeEnd = currentScoreSequence.substr(-2, 1);
+    currentScoreSequence = currentScoreSequence.substr(0, currentScoreSequence.length - 1);
+    console.log(curServeEnd, currentScoreSequence);
 
     if (currentScoreSequence.length == 0) {
         $withdrawBtn.attr("disabled", true);
@@ -668,9 +660,14 @@ function withdraw() {
         });
     }
 }
+/**
+ * 
+ * @param {boolean} whenScorePlus 是否在加分
+ * @returns 当前发球方
+ */
 function swapCourtEnd() {
-    swapContent($leftPlayerContainer);
-    swapContent($rightPlayerContainer);
+    swapLeftContent();
+    swapRightContent();
     const leftPlayerInfo = $leftPlayerContainer.html();
     const rightPlayerInfo = $rightPlayerContainer.html();
 
@@ -682,14 +679,11 @@ function swapCourtEnd() {
 
     $leftScoreBox.text(rightScoreInfo);
     $rightScoreBox.text(leftScoreInfo);
-    $leftScoreBox.toggleClass("serve-score");
-    $rightScoreBox.toggleClass("serve-score");
-
-    currentServeEnd = (currentServeEnd == "left") ? "right" : "left";
-    rotateServeIcon((currentServeEnd == "left") ? rightScoreInfo : leftScoreInfo, currentServeEnd);
 
     currentScoreSequence = reverseScoreSequence(currentScoreSequence);
 
+    const serveEnd = currentScoreSequence.substr(-1, 1);
+    return serveEnd;
 }
 
 function finishGame() {
@@ -732,7 +726,7 @@ function finishGame() {
             $(".interval-dlg").show();
             startCountDownBySecond($intervalCountDown);
             setTimeout(() => {
-                startNewGame();
+                showPlayerSettingPanelOnly();
             }, 0);
         }
 
@@ -745,6 +739,7 @@ function finishMatch() {
     var ok = confirm("确定结束该场比赛？");
     if (ok) {
         stopCountUp();
+        inInterval = false;
         let matchInfo = {
             players: {
                 playerA: (isSingle) ? [playerA1, playerA2] : [playerA1],
@@ -774,42 +769,45 @@ function swapContent($element) {
 }
 
 function swapLeftContent() {
-    $leftPlayerContainer.fadeOut(500, () => {
+    if (debugging) {
         swapContent($leftPlayerContainer);
-        $leftPlayerContainer.fadeIn(500);
-    });
+    } else {
+        $leftPlayerContainer.fadeOut(500, () => {
+            swapContent($leftPlayerContainer);
+            $leftPlayerContainer.fadeIn(500);
+        });
+    }
 }
 
 
 function swapRightContent() {
-    $rightPlayerContainer.fadeOut(500, () => {
+    if (debugging) {
         swapContent($rightPlayerContainer);
-        $rightPlayerContainer.fadeIn(500);
-    });
+    } else {
+        $rightPlayerContainer.fadeOut(500, () => {
+            swapContent($rightPlayerContainer);
+            $rightPlayerContainer.fadeIn(500);
+        });
+    }
 }
 
 function rotateServeIcon(currentScore, serveEnd) {
-    if (serveEnd == '0') {
-        serveEnd = "left";
-    } else if (serveEnd == '1') {
-        serveEnd == "right";
-    }
-    if (currentScore % 2 == 0 && serveEnd == "left") {
+    if (currentScore % 2 == 0 && serveEnd == "0") {
         $serveIcon.addClass("rotate-northeast");
         $serveIcon.removeClass("rotate-southeast");
         $serveIcon.removeClass("rotate-southwest");
         $serveIcon.removeClass("rotate-northwest");
-    } else if (currentScore % 2 == 1 && serveEnd == "left") {
+    } else if (currentScore % 2 == 1 && serveEnd == "0") {
         $serveIcon.removeClass("rotate-northeast");
         $serveIcon.addClass("rotate-southeast");
         $serveIcon.removeClass("rotate-southwest");
         $serveIcon.removeClass("rotate-northwest");
-    } else if (currentScore % 2 == 0 && serveEnd == "right") {
+    } else if (currentScore % 2 == 0 && serveEnd == "1") {
         $serveIcon.removeClass("rotate-northeast");
         $serveIcon.removeClass("rotate-southeast");
         $serveIcon.addClass("rotate-southwest");
         $serveIcon.removeClass("rotate-northwest");
-    } else if (currentScore % 2 == 1 && serveEnd == "right") {
+    } else if (currentScore % 2 == 1 && serveEnd == "1") {
         $serveIcon.removeClass("rotate-northeast");
         $serveIcon.removeClass("rotate-southeast");
         $serveIcon.removeClass("rotate-southwest");
@@ -944,6 +942,121 @@ function swapLetter(str, l1, l2) {
     str = str.replace(new RegExp('#', 'g'), l2);
     return str;
 }
+/**
+ * 
+ * @param {string} updateEnd 比分变化的一方
+ * @returns {Object} serve:发球方的控件，receive: 接发球方的控件
+ */
+function getServeEnd(updateEnd) {
+    let scoreBody;
+    let scoreAnother;
+
+    if (updateEnd == "0") {
+        scoreBody = $("#left-score");
+        scoreAnother = $("#right-score");
+    } else if (updateEnd == "1") {
+        scoreBody = $("#right-score");
+        scoreAnother = $("#left-score");
+    }
+    return { serve: scoreBody, receive: scoreAnother };
+}
+/**
+ * 
+ * @param {string} updateEnd 比分变化的一方
+ * @param {boolean} add 得分为true，撤销为false
+ */
+function updateMainScore(updateEnd, add = true) {
+    const serveInfo = getServeEnd(updateEnd);
+
+    const scoreBody = serveInfo.serve;
+    const receiveBody = serveInfo.receive;
+
+    const currentScore = parseInt(scoreBody.text()) + (add ? 1 : -1);
+    scoreBody.text(currentScore);
+
+    scoreBody.removeClass("serve-score");
+    receiveBody.removeClass("serve-score");
+    return { serve: currentScore, receive: parseInt(receiveBody.text()) };
+}
+
+/**
+ * 
+ * @param {string} updateEnd 比分变化的一方
+ */
+function updateServeInfo(updateEnd) {
+    const serveInfo = getServeEnd(updateEnd);
+
+    const scoreBody = serveInfo.serve;
+    // 调整发球方
+    scoreBody.addClass("serve-score");
+
+
+    //调整发接法图标
+    rotateServeIcon(parseInt(scoreBody.text()), updateEnd);
+
+    //设置发球板翻页动画
+    if (scoreBody.css("transform") == "matrix3d(1, 0, 0, 0, 0, 1, -2.44929e-16, 0, 0, 2.44929e-16, 1, 0, 0, 0, 0, 1)" ||
+        scoreBody.css("transform") == "rotateX(360deg)") {
+        scoreBody.css("transform", "");
+    } else {
+        scoreBody.css("transform", "rotateX(360deg)");
+    }
+}
+
+/**
+ * 交换一方或双方站位及发球方
+ */
+function updateCourt(currentServeEnd,prevServeEnd,add = true) {
+
+    if (currentServeEnd == prevServeEnd) {
+        if (isSingle) {
+            swapLeftContent();
+            swapRightContent();
+        } else {
+            if (currentServeEnd == "0") {
+                swapLeftContent();
+            } else {
+                swapRightContent();
+            }
+        }
+    } else {
+        if (isSingle) {
+            const totalScore = currentScoreSequence.replace(/[^0-1]+/g, '').length;
+            if (totalScore % 2 == 1) {
+                swapLeftContent();
+                swapRightContent();
+            }
+        }
+        // 更新发球员index
+        if (add) {
+            serveOrderIndex = (serveOrderIndex + 1) % 4;
+        }
+    }
+
+
+}
+
+function updateServeTable(updateEnd, add = true) {
+    const scoreBody = getServeEnd(updateEnd).serve;
+    let cScore = parseInt(scoreBody.text());
+    if (!add) {
+        cScore = "";
+    }
+    let currentTotalScore = currentScoreSequence.replace(/[^0-1]+/g, '').length;
+    if (add) {
+        currentTotalScore -= 1;
+    }
+    const $singleScore = $scoreScrollPanel.children().eq(currentTotalScore);
+    $singleScore.children().eq(serveOrder[serveOrderIndex] - 1).children('p').text(cScore);
+    if ($singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth / 2 >= 0) {
+        $scoreScrollContainer.animate({
+            scrollLeft: $singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth / 2
+        });
+    }
+}
+
+
+
 
 class Player {
     constructor(name, team) {

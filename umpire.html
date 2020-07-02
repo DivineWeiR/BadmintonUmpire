@@ -44,9 +44,9 @@
                             <h2>比赛局数</h2>
                             <div class="setting-group">
                                 <div>
-                                    <input type="radio" id="game1" name="game-num" value="1" checked>
+                                    <input type="radio" id="game1" name="game-num" value="1">
                                     <label for="game1"></label><span>1局</span></div>
-                                <div><input type="radio" id="game3" name="game-num" value="3">
+                                <div><input type="radio" id="game3" name="game-num" value="3" checked>
                                     <label for="game3"></label><span>3局</span></div>
                                 <div><input type="radio" id="game5" name="game-num" value="5">
                                     <label for="game5"></label><span>5局</span></div>
@@ -61,7 +61,7 @@
                                     <label for="score15"></label><span>15分</span></div>
                                 <div><input type="radio" id="score21" name="game-score" value="21">
                                     <label for="score21"></label><span>21分</span></div>
-                                <div><input type="radio" id="score-diy" name="game-score" value="-1">
+                                <div><input type="radio" id="score-diy" name="game-score" value="-1"><label for="score-diy"></label>
                                     <input type="text" name="score-diy-input" id="score-diy-input" placeholder="请输入定制比分"
                                         disabled="true"></div>
                             </div>
@@ -465,79 +465,9 @@
         window.onload = function () {
             initSettingPanel();
             initMainPanel();
-            // initCountDown("#counter");
         }
-        // const scoreScrollPanel = document.querySelector(".score-panel");
-        // const scoreContentPanel = document.querySelector(".scroll-panel");
-        // scoreScrollPanel.addEventListener("scroll", function () {
-        //     if (scoreScrollPanel.scrollLeft > 0) {
-        //         $(".shadow-left").show();
-        //     } else {
-        //         $(".shadow-left").hide();
-        //     }
-        //     if (scoreScrollPanel.scrollLeft == scoreContentPanel.scrollWidth - scoreScrollPanel.clientWidth) {
-        //         $(".shadow-right").hide();
-        //     } else {
-        //         $(".shadow-right").show();
-        //     }
-        // });
-        // const settingScrollPanel = document.querySelector(".input-wrapper");
-        // const settingContentPanel = document.querySelector(".input-scroll");
-        // if (settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
-        //     $(".bottom-shadow").hide();
-        //     $(".scroll-top").hide();
-        // }
-        // settingScrollPanel.addEventListener("scroll", function () {
-        //     if (settingScrollPanel.scrollTop > 0 || settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
-        //         $(".bottom-shadow").hide();
-        //         $(".scroll-top").show();
-        //     } else {
-        //         $(".bottom-shadow").show();
-        //         $(".scroll-top").hide();
-        //     }
-        // });
-
-
-        // const eventButtons = document.querySelectorAll(".dlg button");
-        // for (let button of eventButtons) {
-        //     button.addEventListener("click", function () {
-        //         let container = $(".container");
-        //         container.toggleClass("blur");
-        //         let eventDlg = $(".event-dlg");
-        //         eventDlg.toggleClass("hidden");
-        //     });
-        // }
-        // const hintBtn = document.querySelector("#hint-btn");
-        // hintBtn.addEventListener("click", function () {
-        //     $(".hint").toggleClass("hidden");
-        // });
-        // const nextBtn = document.querySelector("#next-btn");
-        // nextBtn.addEventListener("click", function () {
-        //     $(".match-setting").hide();
-        //     $(".player-setting").show();
-        //     $(".bottom-shadow").hide();
-        //     if (settingScrollPanel.scrollTop > 0 || settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
-        //         $(".bottom-shadow").hide();
-        //         $(".scroll-top").show();
-        //     } else {
-        //         $(".bottom-shadow").show();
-        //         $(".scroll-top").hide();
-        //     }
-        // });
-        // const prevBtn = document.querySelector("#prev-btn");
-        // prevBtn.addEventListener("click", function () {
-        //     $(".match-setting").show();
-        //     $(".player-setting").hide();
-        //     if (settingScrollPanel.scrollTop > 0 || settingScrollPanel.clientHeight > settingContentPanel.clientHeight) {
-        //         $(".bottom-shadow").hide();
-        //         $(".scroll-top").show();
-        //     } else {
-        //         $(".bottom-shadow").show();
-        //         $(".scroll-top").hide();
-        //     }
-        // });
-        document.querySelector("#left-plus").addEventListener("click", function () { scorePlus("left") });
-        document.querySelector("#right-plus").addEventListener("click", function () { scorePlus("right") });
+        document.querySelector("#left-plus").addEventListener("click", function () { scorePlus("0") });
+        document.querySelector("#right-plus").addEventListener("click", function () { scorePlus("1") });
 
     </script>
 </body>
