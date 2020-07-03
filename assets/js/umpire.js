@@ -717,7 +717,7 @@ function withdraw() {
         let event = eventRecording.pop();
         updateServeTableBackground(true, event.playerIndex, false);
         currentScoreSequence = currentScoreSequence.substr(0, currentScoreSequence.length - 1);
-        prevServeEnd = currentScoreSequence(-1, 1);
+        prevServeEnd = currentScoreSequence.substr(-1, 1);
     }
 
     if (currentScoreSequence.length == 0) {
