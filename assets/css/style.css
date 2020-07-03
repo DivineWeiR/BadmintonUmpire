@@ -430,33 +430,23 @@ h1.serve-score {
 }
 
 .input-box {
-    height: 650px;
-    padding-top: 0;
     overflow: hidden;
 }
 
-.input-box nav {
-    height: 50px;
-    display: flex;
-    padding-right: 20px;
-    justify-content: flex-end;
-}
 
-.input-box nav a, .cancel-box button {
+.cancel-box a, .cancel-box button {
     font-size: 20px;
     line-height: 50px;
     padding-right: 20px;
     border: none;
     background: none;
     color: #107a43;
-}
-
-.cancel-box button {
     padding-right: 0;
 }
 
-.input-box nav a:hover i, .cancel-box button:hover i {
-    transform: rotate(90deg);
+.cancel-box a:hover i, .cancel-box button:hover i {
+    transform: rotate(90deg) scale(1.1);
+    color:#107a43;
     transition: transform 0.5s;
 }
 
@@ -479,7 +469,7 @@ h1.serve-score {
 .event-operation .btn-group {
     display: flex;
     align-items: center;
-    padding:0 0.5em;
+    padding: 0 0.5em;
 }
 
 .event-operation .btn {
@@ -506,28 +496,30 @@ h1.serve-score {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding:0 0.5em;
+    padding: 0 0.5em;
 }
 
-.injure-stop{
-    width:50%;
+.injure-stop {
+    width: 50%;
 }
-.btn-group .btn{
+
+.btn-group .btn {
     border-radius: 0;
     border-collapse: collapse;
     border-right: none;
 }
 
-.btn-group .btn:first-child{
+.btn-group .btn:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
 
-.btn-group .btn:last-child{
+.btn-group .btn:last-child {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     border-right: #1c9255 1px solid;
 }
+
 .btn i {
     font-size: 1.2em;
     margin-right: 0.5em;
@@ -924,6 +916,10 @@ h1.serve-score {
     .input-box {
         width: 90vw;
         height: 80vh;
+        border-radius: 10px;
+    }
+    .dlg {
+        width: 90vw;
         border-radius: 10px;
     }
     .input-wrapper {

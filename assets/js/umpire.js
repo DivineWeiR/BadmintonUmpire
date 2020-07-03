@@ -188,6 +188,7 @@ function initMainPanel() {
             $("#player-a2").show();
             $("#player-b2").show();
         }
+        $("#setting-title").text("选手设置");
     });
 
     $prevBtn.click(() => {
@@ -200,6 +201,7 @@ function initMainPanel() {
             $bottomShadow.show();
             $scrollTopBtn.hide();
         }
+        $("#setting-title").text("比赛设置");
     });
 
     $withdrawBtn.click(() => {
@@ -241,7 +243,11 @@ function initMainPanel() {
             startCountDownByMinute($("#b1-injure-time"));
             $("#b1-injure-time").addClass("active");
             currentScoreSequence += "I";
-            eventRecording.push(new Event(playerB1.name, 2, "INJURY"));
+            if (isSingle) {
+                eventRecording.push(new Event(playerB1.name, 1, "INJURY"));
+            } else {
+                eventRecording.push(new Event(playerB1.name, 2, "INJURY"));
+            }
         } else {
             stopCountDownByMinute($("#b1-injure-time"));
             $("#b1-injure-time").removeClass("active");
@@ -282,7 +288,11 @@ function initMainPanel() {
     });
     $("#b1-retire").click(() => {
         currentScoreSequence += "R";
-        eventRecording.push(new Event(playerB1.name, 2, "RETIRE"));
+        if (isSingle) {
+            eventRecording.push(new Event(playerB1.name, 1, "RETIRE"));
+        } else {
+            eventRecording.push(new Event(playerB1.name, 2, "RETIRE"));
+        }
         finishGame();
         if (!isLastGame) {
             finishMatch();
@@ -312,8 +322,12 @@ function initMainPanel() {
     $("#b1-yellow-card").click(() => {
         currentScoreSequence += "W";
         toggleEventDlg(false);
-        updateServeTableBackground(false, 2, true);
-        eventRecording.push(new Event(playerB1.name, 2, "WARNING"));
+        let playerIndex = 2;
+        if (isSingle) {
+            playerIndex /= 2;
+        }
+        updateServeTableBackground(false, playerIndex, true);
+        eventRecording.push(new Event(playerB1.name, playerIndex, "WARNING"));
     });
     $("#b2-yellow-card").click(() => {
         currentScoreSequence += "W";
@@ -338,8 +352,12 @@ function initMainPanel() {
     });
     $("#b1-red-card").click(() => {
         currentScoreSequence += "F";
-        updateServeTableBackground(true, 2, true);
-        eventRecording.push(new Event(playerB1.name, 2, "FAULT"));
+        let playerIndex = 2;
+        if (isSingle) {
+            playerIndex /= 2;
+        }
+        updateServeTableBackground(true, playerIndex, true);
+        eventRecording.push(new Event(playerB1.name, playerIndex, "FAULT"));
         scorePlus("0");
         toggleEventDlg(false);
     });
@@ -369,7 +387,11 @@ function initMainPanel() {
     });
     $("#b1-black-card").click(() => {
         currentScoreSequence += "D";
-        eventRecording.push(new Event(playerB1.name, 2, "DISQUALIFY"));
+        let playerIndex = 2;
+        if (isSingle) {
+            playerIndex /= 2;
+        }
+        eventRecording.push(new Event(playerB1.name, playerIndex, "DISQUALIFY"));
         finishGame();
         if (!isLastGame) {
             finishMatch();
@@ -626,6 +648,8 @@ function setPlayerOption() {
     if (isSingle) {
         $("#event-name-a1").text(playerA1.name);
         $("#event-name-b1").text(playerB1.name);
+        $(".dlg .event-operation").eq(3).remove();
+        $(".dlg .event-operation").eq(1).remove();
         $("#names-col").html(generateScoreTableColumn([playerA1.name, playerB1.name]));
         $("#serves-col").html(generateScoreTableColumn([playerA1.serve, playerB1.serve]));
         scores = ["", ""];

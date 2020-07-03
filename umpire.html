@@ -13,7 +13,11 @@
 <body>
     <div class="input-container">
         <div class="input-box">
-            <nav>
+            <nav class="cancel-box">
+                <span></span>
+                <span>
+                    <h1 id="setting-title">比赛设置</h1>
+                </span>
                 <a id="cancel_setting" href="index.html"><i class="fa fa-times"></i></a>
             </nav>
             <div class="scroll-top"><i class="fa fa-angle-double-up"></i></div>
@@ -23,7 +27,7 @@
 
                 <div class="input-scroll">
                     <article class="match-setting">
-                        <h1>比赛设置</h1>
+
                         <section class="setting-item">
                             <h2>比赛类型</h2>
                             <div class="setting-group">
@@ -61,7 +65,8 @@
                                     <label for="score15"></label><span>15分</span></div>
                                 <div><input type="radio" id="score21" name="game-score" value="21">
                                     <label for="score21"></label><span>21分</span></div>
-                                <div><input type="radio" id="score-diy" name="game-score" value="-1"><label for="score-diy"></label>
+                                <div><input type="radio" id="score-diy" name="game-score" value="-1"><label
+                                        for="score-diy"></label>
                                     <input type="text" name="score-diy-input" id="score-diy-input" placeholder="请输入定制比分"
                                         disabled="true"></div>
                             </div>
@@ -175,7 +180,6 @@
                         </footer>
                     </article>
                     <article class="player-setting hidden">
-                        <h1>选手设置</h1>
                         <section class="player-setting-item">
                             <h2>左半区</h2>
                             <div class="single-player">
@@ -206,9 +210,9 @@
                                 </div>
                                 <div class="radio-group">
                                     <input class="serve-col" type="radio" name="serve" id="a2-serve" value="a2">
-                                        <label for="a2-serve"></label>
+                                    <label for="a2-serve"></label>
                                     <input class="receive-col" type="radio" name="receive" id="a2-receive" value="a2">
-                                        <label for="a2-receive"></label>
+                                    <label for="a2-receive"></label>
                                 </div>
                             </div>
                         </section>
@@ -229,9 +233,9 @@
                                 </div>
                                 <div class="radio-group">
                                     <input class="serve-col" type="radio" name="serve" id="b1-serve" value="b1">
-                                        <label for="b1-serve"></label>
+                                    <label for="b1-serve"></label>
                                     <input class="receive-col" type="radio" name="receive" id="b1-receive" value="b1">
-                                        <label for="b1-receive"></label>
+                                    <label for="b1-receive"></label>
                                 </div>
                             </div>
                             <div class="single-player" id="player-b2">
@@ -241,9 +245,9 @@
                                 </div>
                                 <div class="radio-group">
                                     <input class="serve-col" type="radio" name="serve" id="b2-serve" value="b2">
-                                        <label for="b2-serve"></label>
+                                    <label for="b2-serve"></label>
                                     <input class="receive-col" type="radio" name="receive" id="b2-receive" value="b2">
-                                        <label for="b2-receive"></label>
+                                    <label for="b2-receive"></label>
                                 </div>
                             </div>
                         </section>
@@ -393,9 +397,12 @@
     </div>
     <div class="event-dlg hidden">
         <section class="dlg">
-            <nav class="cancel-box"><span></span><span>
+            <nav class="cancel-box">
+                <span></span>
+                <span>
                     <h1>事件记录</h1>
-                </span><button id="cancel"><i class="fa fa-times"></i></button></nav>
+                </span>
+                <button id="cancel"><i class="fa fa-times"></i></button></nav>
             <div class="event-operation">
                 <h3 id="event-name-a1">陈子霖</h3>
                 <div class="injure-panel">
