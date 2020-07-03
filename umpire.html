@@ -16,8 +16,8 @@
             <nav>
                 <a id="cancel_setting" href="index.html"><i class="fa fa-times"></i></a>
             </nav>
-            <div class="scroll-top"><i class="fa fa-angle-double-up" onclick="scrollToTop('input-wrapper')"></i></div>
-            <div class="bottom-shadow"><i class="fa fa-angle-double-down" onclick="scrollToBottom('input-wrapper')"></i>
+            <div class="scroll-top"><i class="fa fa-angle-double-up"></i></div>
+            <div class="bottom-shadow"><i class="fa fa-angle-double-down"></i>
             </div>
             <div class="input-wrapper">
 
@@ -193,11 +193,9 @@
 
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="a1-serve" value="a1"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="serve-col" type="radio" name="serve" id="a1-serve" value="a1">
                                     <label for="a1-serve"></label>
-                                    <input class="receive-col" type="radio" name="receive" id="a1-receive" value="a1"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="a1-receive" value="a1">
                                     <label for="a1-receive"></label>
                                 </div>
                             </div>
@@ -207,11 +205,9 @@
                                     <input type="text" name="a2-name" id="a2-name" class="team" placeholder="运动员名称">
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="a2-serve" value="a2"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="serve-col" type="radio" name="serve" id="a2-serve" value="a2">
                                         <label for="a2-serve"></label>
-                                    <input class="receive-col" type="radio" name="receive" id="a2-receive" value="a2"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="a2-receive" value="a2">
                                         <label for="a2-receive"></label>
                                 </div>
                             </div>
@@ -232,11 +228,9 @@
                                     <input type="text" name="b1-name" id="b1-name" class="team" placeholder="运动员名称">
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="b1-serve" value="b1"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="serve-col" type="radio" name="serve" id="b1-serve" value="b1">
                                         <label for="b1-serve"></label>
-                                    <input class="receive-col" type="radio" name="receive" id="b1-receive" value="b1"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="b1-receive" value="b1">
                                         <label for="b1-receive"></label>
                                 </div>
                             </div>
@@ -246,18 +240,16 @@
                                     <input type="text" name="b2-name" id="b2-name" class="team" placeholder="运动员名称">
                                 </div>
                                 <div class="radio-group">
-                                    <input class="serve-col" type="radio" name="serve" id="b2-serve" value="b2"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="serve-col" type="radio" name="serve" id="b2-serve" value="b2">
                                         <label for="b2-serve"></label>
-                                    <input class="receive-col" type="radio" name="receive" id="b2-receive" value="b2"
-                                        onclick="radioProtect(this.id)">
+                                    <input class="receive-col" type="radio" name="receive" id="b2-receive" value="b2">
                                         <label for="b2-receive"></label>
                                 </div>
                             </div>
                         </section>
                         <section class="btn-box">
-                            <button class="btn" id="change-end" onclick="swapLR()">左右交换</button>
-                            <button class="btn" id="start-game" onclick="startNewGame()">开始比赛</button>
+                            <button class="btn" id="change-end">左右交换</button>
+                            <button class="btn" id="start-game">开始比赛</button>
                         </section>
                         <footer class="prev-btn-box">
                             <button id="prev-btn"><i class="fa fa-arrow-left"></i>比赛设置</button>
@@ -359,16 +351,16 @@
             <section class="score-table">
                 <div class="players" id="names-col">
                     <div class="p1-line">
-                        <p>陈子霖</p>
+                        <p></p>
                     </div>
                     <div class="p1-line">
-                        <p>程千冉</p>
+                        <p></p>
                     </div>
                     <div class="p2-line">
-                        <p>徐小健</p>
+                        <p></p>
                     </div>
                     <div class="p2-line">
-                        <p>黄紫棋</p>
+                        <p></p>
                     </div>
                 </div>
                 <div class="serves" id="serves-col">
@@ -376,10 +368,10 @@
                         <p id="pA1-serve"></p>
                     </div>
                     <div class="p1-line">
-                        <p id="pA2-serve">S</p>
+                        <p id="pA2-serve"></p>
                     </div>
                     <div class="p2-line">
-                        <p id="pB1-serve">R</p>
+                        <p id="pB1-serve"></p>
                     </div>
                     <div class="p2-line">
                         <p id="pB2-serve"></p>
@@ -405,39 +397,76 @@
                     <h1>事件记录</h1>
                 </span><button id="cancel"><i class="fa fa-times"></i></button></nav>
             <div class="event-operation">
-                <h3 class="names" id="event-playerA"><span>陈子霖</span>&<span>程千冉</span></h3>
+                <h3 id="event-name-a1">陈子霖</h3>
                 <div class="injure-panel">
-                    <button class="btn injure-stop" id="p1-injure"><i class="fa fa-medkit"></i>
-                        <p>医疗暂停</p>
+                    <button class="btn injure-stop" id="a1-injure"><i class="fa fa-medkit fa-fw"></i>
+                        医疗暂停
                     </button>
-                    <div id="p1-injure-time" class="time-panel">
+                    <div id="a1-injure-time" class="time-panel">
                         <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span>
                         </p>
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button class="btn" id="p1-retire"><i class="fa fa-times"></i>弃权</button>
-                    <button class="btn" id="p1-yellow-card"><i class="fa fa-square yellow-card"></i>黄牌</button>
-                    <button class="btn" id="p1-red-card"><i class="fa fa-square red-card"></i>红牌</button>
-                    <button class="btn" id="p1-black-card"><i class="fa fa-square black-card"></i>黑牌</button>
+                    <button class="btn" id="a1-retire"><i class="fa fa-times fa-fw"></i>弃权</button>
+                    <button class="btn" id="a1-yellow-card"><i class="fa fa-square fa-fw yellow-card"></i>黄牌</button>
+                    <button class="btn" id="a1-red-card"><i class="fa fa-square fa-fw red-card"></i>红牌</button>
+                    <button class="btn" id="a1-black-card"><i class="fa fa-square fa-fw black-card"></i>黑牌</button>
                 </div>
             </div>
             <div class="event-operation">
-                <h3 class="names" id="event-playerB"><span>徐小健</span>&<span>黄紫棋</span></h3>
+                <h3 id="event-name-a2">程千冉</h3>
                 <div class="injure-panel">
-                    <button class="btn injure-stop" id="p2-injure"><i class="fa fa-medkit"></i>
-                        <p>医疗暂停</p>
+                    <button class="btn injure-stop" id="a2-injure"><i class="fa fa-medkit fa-fw"></i>
+                        医疗暂停
                     </button>
-                    <div id="p2-injure-time" class="time-panel active">
+                    <div id="a2-injure-time" class="time-panel">
                         <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span>
                         </p>
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button class="btn" id="p2-retire"><i class="fa fa-times"></i>弃权</button>
-                    <button class="btn" id="p2-yellow-card"><i class="fa fa-square yellow-card"></i>黄牌</button>
-                    <button class="btn" id="p2-red-card"><i class="fa fa-square red-card"></i>红牌</button>
-                    <button class="btn" id="p2-black-card"><i class="fa fa-square black-card"></i>黑牌</button>
+                    <button class="btn" id="a2-retire"><i class="fa fa-times fa-fw"></i>弃权</button>
+                    <button class="btn" id="a2-yellow-card"><i class="fa fa-square fa-fw yellow-card"></i>黄牌</button>
+                    <button class="btn" id="a2-red-card"><i class="fa fa-square fa-fw red-card"></i>红牌</button>
+                    <button class="btn" id="a2-black-card"><i class="fa fa-square fa-fw black-card"></i>黑牌</button>
+                </div>
+            </div>
+            <hr>
+            <div class="event-operation">
+                <h3 id="event-name-b1">徐小健</h3>
+                <div class="injure-panel">
+                    <button class="btn injure-stop" id="b1-injure"><i class="fa fa-medkit fa-fw"></i>
+                        医疗暂停
+                    </button>
+                    <div id="b1-injure-time" class="time-panel">
+                        <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="b1-retire"><i class="fa fa-times fa-fw"></i>弃权</button>
+                    <button class="btn" id="b1-yellow-card"><i class="fa fa-square fa-fw yellow-card"></i>黄牌</button>
+                    <button class="btn" id="b1-red-card"><i class="fa fa-square fa-fw red-card"></i>红牌</button>
+                    <button class="btn" id="b1-black-card"><i class="fa fa-square fa-fw black-card"></i>黑牌</button>
+                </div>
+            </div>
+            <div class="event-operation">
+                <h3 id="event-name-b2">黄紫棋</h3>
+                <div class="injure-panel">
+                    <button class="btn injure-stop" id="a2-injure"><i class="fa fa-medkit fa-fw"></i>
+                        医疗暂停
+                    </button>
+                    <div id="b2-injure-time" class="time-panel">
+                        <p><span class="minute">05</span><span class="seperator">:</span><span class="second">00</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn" id="b2-retire"><i class="fa fa-times fa-fw"></i>弃权</button>
+                    <button class="btn" id="b2-yellow-card"><i class="fa fa-square fa-fw yellow-card"></i>黄牌</button>
+                    <button class="btn" id="b2-red-card"><i class="fa fa-square fa-fw red-card"></i>红牌</button>
+                    <button class="btn" id="b2-black-card"><i class="fa fa-square fa-fw black-card"></i>黑牌</button>
                 </div>
             </div>
         </section>
@@ -459,17 +488,9 @@
     </div>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="assets/js/counter.js"></script>
-    <script src="assets/js/umpire.js"></script>
-    <script>
-
-        window.onload = function () {
-            initSettingPanel();
-            initMainPanel();
-        }
-        document.querySelector("#left-plus").addEventListener("click", function () { scorePlus("0") });
-        document.querySelector("#right-plus").addEventListener("click", function () { scorePlus("1") });
-
-    </script>
+    <script src="assets/js/model.js" type="module"></script>
+    <script src="assets/js/stack.js" type="module"></script>
+    <script src="assets/js/umpire.js" type="module"></script>
 </body>
 
 </html>

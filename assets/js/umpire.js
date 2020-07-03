@@ -1,3 +1,6 @@
+import Stack from './stack.js';
+import { Player, Event } from './model.js';
+
 let serveOrder = [2, 4, 1, 3];
 let serveOrderIndex = 0;
 let currentScoreSequence = "";
@@ -12,22 +15,21 @@ let finalScore, finalMax, finalInterval;
 
 let intervalBetween, intervalInner;//局间间歇，局中间歇
 let intervalBetweenTime, intervalInnerTime;//间歇时间
-let inInterval = false;
 
 let courtIndex = "", competitionName = "", matchId = "";
 let referee = "", umpire = "", serviceJudge = "";
 
-let serve, receive;
 let initServe, initReceive, initServeEnd;
 
 let prevGamesScore = "", currentMatchScore = "", currentGameIndex = 0;
-let duration, p1MedicalStop, p2MedicalStop;
 
 let matchStart = false;
 
 let isLastGame = false;
 
 let p1Injure = false, p2Injure = false;
+
+let eventRecording = new Stack();
 
 //调试时使用
 let debugging = true;
@@ -63,6 +65,10 @@ const $rightScoreBox = $("#right-score");
 
 const $intervalCountDown = $("#interval-count-down");
 
+window.onload = function () {
+    initSettingPanel();
+    initMainPanel();
+}
 
 function initSettingPanel() {
     $("#score-diy-input").attr("disabled", !$("#score-diy").is(":checked"));
@@ -111,6 +117,13 @@ function initSettingPanel() {
 }
 
 function initMainPanel() {
+    $("#left-plus").click(() => {
+        scorePlus('0');
+    });
+    $("#right-plus").click(() => {
+        scorePlus("1");
+    })
+
     $scoreScrollContainer.scroll(() => {
         if ($scoreScrollContainer[0].scrollLeft > 0) {
             $(".shadow-left").show();
@@ -145,18 +158,13 @@ function initMainPanel() {
 
 
     $eventRecordBtn.click(() => {
-        $container.addClass("blur");
-        $eventDlg.toggleClass("hidden");
+        toggleEventDlg(true);
     });
 
-    //后续还会为这些按钮添加其他函数操作，因此这里使用原生js获取按钮
-    const eventButtons = document.querySelectorAll(".dlg #cancel, .dlg .btn-group button");
-    for (let button of eventButtons) {
-        button.addEventListener("click", function () {
-            $container.addClass("blur");
-            $eventDlg.toggleClass("hidden");
-        });
-    }
+    $('#cancel').click(() => {
+        toggleEventDlg(false);
+    });
+
 
 
     $hintBtn.click(() => {
@@ -198,74 +206,180 @@ function initMainPanel() {
         withdraw();
     });
 
-    $("#p1-injure").click(() => {
+    $("#a1-injure").click(() => {
         p1Injure = !p1Injure;
         if (p1Injure) {
-            startCountDownByMinute($("#p1-injure-time"));
-            inInterval = true;
-            $("#p1-injure-time").addClass("active");
+            startCountDownByMinute($("#a1-injure-time"));
+            $("#a1-injure-time").addClass("active");
             currentScoreSequence += "i";
+            eventRecording.push(new Event(playerA1.name, 0, "INJURY"));
+
         } else {
-            stopCountDownByMinute($("#p1-injure-time"));
-            inInterval = false;
-            $("#p1-injure-time").removeClass("active");
+            stopCountDownByMinute($("#a1-injure-time"));
+            $("#a1-injure-time").removeClass("active");
+            toggleEventDlg(false);
         }
-        toggleValue($("#p1-injure p"), "医疗暂停", "继续比赛");
+        toggleValue($("#a1-injure p"), "医疗暂停", "继续比赛");
     });
-    $("#p2-injure").click(() => {
+    $("#a2-injure").click(() => {
         p2Injure = !p2Injure;
         if (p2Injure) {
-            startCountDownByMinute($("#p2-injure-time"));
-            inInterval = true;
-            $("#p2-injure-time").addClass("active");
-            currentScoreSequence += "I";
+            startCountDownByMinute($("#a2-injure-time"));
+            $("#a2-injure-time").addClass("active");
+            currentScoreSequence += "i";
+            eventRecording.push(new Event(playerA2.name, 1, "INJURY"));
         } else {
-            stopCountDownByMinute($("#p2-injure-time"));
-            inInterval = false;
-            $("#p2-injure-time").removeClass("active");
+            stopCountDownByMinute($("#a2-injure-time"));
+            $("#a2-injure-time").removeClass("active");
+            toggleEventDlg(false);
         }
-        toggleValue($("#p2-injure p"), "医疗暂停", "继续比赛");
+        toggleValue($("#a2-injure p"), "医疗暂停", "继续比赛");
+    });
+    $("#b1-injure").click(() => {
+        p1Injure = !p1Injure;
+        if (p1Injure) {
+            startCountDownByMinute($("#b1-injure-time"));
+            $("#b1-injure-time").addClass("active");
+            currentScoreSequence += "I";
+            eventRecording.push(new Event(playerB1.name, 2, "INJURY"));
+        } else {
+            stopCountDownByMinute($("#b1-injure-time"));
+            $("#b1-injure-time").removeClass("active");
+            toggleEventDlg(false);
+        }
+        toggleValue($("#b1-injure p"), "医疗暂停", "继续比赛");
+    });
+    $("#b2-injure").click(() => {
+        p2Injure = !p2Injure;
+        if (p2Injure) {
+            startCountDownByMinute($("#b2-injure-time"));
+            $("#b2-injure-time").addClass("active");
+            currentScoreSequence += "I";
+            eventRecording.push(new Event(playerB2.name, 3, "INJURY"));
+        } else {
+            stopCountDownByMinute($("#b2-injure-time"));
+            $("#b2-injure-time").removeClass("active");
+            toggleEventDlg(false);
+        }
+        toggleValue($("#b2-injure p"), "医疗暂停", "继续比赛");
     });
 
-    $("#p1-retire").click(() => {
+    $("#a1-retire").click(() => {
         currentScoreSequence += "r";
+        eventRecording.push(new Event(playerA1.name, 0, "RETIRE"));
         finishGame();
-        if (currentGameIndex + 1 != gameNum) {
+        if (!isLastGame) {
             finishMatch();
         }
     });
-    $("#p2-retire").click(() => {
+    $("#a2-retire").click(() => {
+        currentScoreSequence += "r";
+        eventRecording.push(new Event(playerA2.name, 1, "RETIRE"));
+        finishGame();
+        if (!isLastGame) {
+            finishMatch();
+        }
+    });
+    $("#b1-retire").click(() => {
         currentScoreSequence += "R";
+        eventRecording.push(new Event(playerB1.name, 2, "RETIRE"));
         finishGame();
-        if (currentGameIndex + 1 != gameNum) {
+        if (!isLastGame) {
             finishMatch();
         }
     });
-    $("#p1-yellow-card").click(() => {
+    $("#b2-retire").click(() => {
+        currentScoreSequence += "R";
+        eventRecording.push(new Event(playerB2.name, 3, "RETIRE"));
+        finishGame();
+        if (!isLastGame) {
+            finishMatch();
+        }
+    });
+
+    $("#a1-yellow-card").click(() => {
         currentScoreSequence += "w";
+        toggleEventDlg(false);
+        updateServeTableBackground(false, 0, true);
+        eventRecording.push(new Event(playerA1.name, 0, "WARNING"));
     });
-    $("#p2-yellow-card").click(() => {
+    $("#a2-yellow-card").click(() => {
+        currentScoreSequence += "w";
+        toggleEventDlg(false);
+        updateServeTableBackground(false, 1, true);
+        eventRecording.push(new Event(playerA2.name, 1, "WARNING"));
+    });
+    $("#b1-yellow-card").click(() => {
         currentScoreSequence += "W";
+        toggleEventDlg(false);
+        updateServeTableBackground(false, 2, true);
+        eventRecording.push(new Event(playerB1.name, 2, "WARNING"));
     });
-    $("#p1-red-card").click(() => {
+    $("#b2-yellow-card").click(() => {
+        currentScoreSequence += "W";
+        toggleEventDlg(false);
+        updateServeTableBackground(false, 3, true);
+        eventRecording.push(new Event(playerB2.name, 3, "WARNING"));
+    });
+
+    $("#a1-red-card").click(() => {
         currentScoreSequence += "f";
-        scorePlus("right");
+        updateServeTableBackground(true, 0, true);
+        eventRecording.push(new Event(playerA1.name, 0, "FAULT"));
+        scorePlus("1");
+        toggleEventDlg(false);
     });
-    $("#p2-red-card").click(() => {
+    $("#a2-red-card").click(() => {
+        currentScoreSequence += "f";
+        updateServeTableBackground(true, 1, true);
+        eventRecording.push(new Event(playerA2.name, 1, "FAULT"));
+        scorePlus("1");
+        toggleEventDlg(false);
+    });
+    $("#b1-red-card").click(() => {
         currentScoreSequence += "F";
-        scorePlus("left");
+        updateServeTableBackground(true, 2, true);
+        eventRecording.push(new Event(playerB1.name, 2, "FAULT"));
+        scorePlus("0");
+        toggleEventDlg(false);
     });
-    $("#p1-black-card").click(() => {
+    $("#b2-red-card").click(() => {
+        currentScoreSequence += "F";
+        updateServeTableBackground(true, 3, true);
+        eventRecording.push(new Event(playerB1.name, 3, "FAULT"));
+        scorePlus("0");
+        toggleEventDlg(false);
+    });
+
+    $("#a1-black-card").click(() => {
         currentScoreSequence += "d";
+        eventRecording.push(new Event(playerA1.name, 0, "DISQUALIFY"));
         finishGame();
-        if (currentGameIndex + 1 != gameNum) {
+        if (!isLastGame) {
             finishMatch();
         }
     });
-    $("#p2-black-card").click(() => {
-        currentScoreSequence += "D";
+    $("#a2-black-card").click(() => {
+        currentScoreSequence += "d";
+        eventRecording.push(new Event(playerA2.name, 1, "DISQUALIFY"));
         finishGame();
-        if (currentGameIndex + 1 != gameNum) {
+        if (!isLastGame) {
+            finishMatch();
+        }
+    });
+    $("#b1-black-card").click(() => {
+        currentScoreSequence += "D";
+        eventRecording.push(new Event(playerB1.name, 2, "DISQUALIFY"));
+        finishGame();
+        if (!isLastGame) {
+            finishMatch();
+        }
+    });
+    $("#b2-black-card").click(() => {
+        currentScoreSequence += "D";
+        eventRecording.push(new Event(playerB2.name, 3, "DOISQUALIFY"));
+        finishGame();
+        if (!isLastGame) {
             finishMatch();
         }
     });
@@ -273,12 +387,37 @@ function initMainPanel() {
     $("#stop-interval").click(() => {
         $(".container").removeClass("blur");
         stopCountDownBySecond($("#stop-interval"));
-        inInterval = false;
         $(".interval-dlg").hide();
+    });
+
+    $(".fa-angle-double-up").click(() => {
+        scrollToTop('input-wrapper');
+    });
+
+    $(".fa-angle-double-down").click(() => {
+        scrollToBottom('input-wrapper');
+    });
+
+    $(".serve-col").click(function () {
+        radioProtect(this.id);
+    });
+
+    $(".receive-col").click(function () {
+        radioProtect(this.id);
+    });
+
+    $("#change-end").click(() => {
+        swapLR();
+    });
+    $("#start-game").click(() => {
+        startNewGame();
     })
+
+    $container.addClass("blur");
 }
 
 function startNewGame() {
+    $container.removeClass("blur");
     getPlayerOption();
     if (initReceive == undefined || initServe == undefined) {
         alert("请选择发接发球员！");
@@ -306,8 +445,6 @@ function startNewGame() {
             swapCourtEnd();
         }
     }
-    hasChangedEnd = false;
-    hasInterval = false;
     $matchScore.text(currentMatchScore);
 
 
@@ -487,14 +624,17 @@ function setPlayerOption() {
     let scores = [];
     let scrollInnerHtml = "";
     if (isSingle) {
-        $("#event-playerA").text(playerA1.name);
-        $("#event-playerB").text(playerB1.name);
+        $("#event-name-a1").text(playerA1.name);
+        $("#event-name-b1").text(playerB1.name);
         $("#names-col").html(generateScoreTableColumn([playerA1.name, playerB1.name]));
         $("#serves-col").html(generateScoreTableColumn([playerA1.serve, playerB1.serve]));
         scores = ["", ""];
     } else {
-        $("#event-playerA").text(playerA1.name + "&" + playerA2.name);
-        $("#event-playerB").text(playerB1.name + "&" + playerB2.name);
+        $("#event-name-a1").text(playerA1.name);
+        $("#event-name-a2").text(playerA2.name);
+        $("#event-name-b1").text(playerB1.name);
+        $("#event-name-b2").text(playerB2.name);
+
         $("#names-col").html(generateScoreTableColumn([playerA1.name, playerA2.name, playerB1.name, playerB2.name]));
         $("#serves-col").html(generateScoreTableColumn([playerA1.serve, playerA2.serve, playerB1.serve, playerB2.serve]));
         scores = ["", "", "", ""];
@@ -530,8 +670,10 @@ function scorePlus(scoreEnd) {
     }
 
     const currentServeEnd = currentScoreSequence.substr(-1, 1);
-    const prevServeEnd = currentScoreSequence.length > 1 ? currentScoreSequence.substr(-2, 1) : initServeEnd;
-
+    let prevServeEnd = currentScoreSequence.length > 1 ? currentScoreSequence.substr(-2, 1) : initServeEnd;
+    if (prevServeEnd != '0' && prevServeEnd != '1') {
+        prevServeEnd = currentScoreSequence.length > 2 ? currentScoreSequence.substr(-3, 1) : initServeEnd;
+    }
     updateCourt(currentServeEnd, prevServeEnd, true);
 
 
@@ -544,7 +686,6 @@ function scorePlus(scoreEnd) {
         resetCountDownBySecond($intervalCountDown, intervalInnerTime);
         $(".interval-dlg").show();
         $(".container").addClass("blur");
-        inInterval = true;
         startCountDownBySecond($intervalCountDown);
     }
 
@@ -555,7 +696,30 @@ function scorePlus(scoreEnd) {
 function withdraw() {
     let curServeEnd = currentScoreSequence.substr(-1, 1);
     let prevServeEnd = currentScoreSequence.substr(-2, 1);
+    let tempStore = "";
     currentScoreSequence = currentScoreSequence.substr(0, currentScoreSequence.length - 1);
+    if (curServeEnd == 'i' && curServeEnd == 'I') {
+        tempStore = curServeEnd;
+        curServeEnd = prevServeEnd;
+        if (currentScoreSequence.length > 1) {
+            prevServeEnd = currentScoreSequence.substr(-2, 1);
+        } else {
+            prevServeEnd = initServeEnd;
+        }
+    }
+    if (curServeEnd == 'w' || curServeEnd == 'W') {
+        let event = eventRecording.pop();
+        updateServeTableBackground(false, event.playerIndex, false);
+        return;
+    }
+
+    if (prevServeEnd == 'f' || prevServeEnd == 'F') {
+        let event = eventRecording.pop();
+        updateServeTableBackground(true, event.playerIndex, false);
+        currentScoreSequence = currentScoreSequence.substr(0, currentScoreSequence.length - 1);
+        prevServeEnd = currentScoreSequence(-1, 1);
+    }
+
     if (currentScoreSequence.length == 0) {
         $withdrawBtn.attr("disabled", true);
     }
@@ -580,86 +744,12 @@ function withdraw() {
     if (curServeEnd != prevServeEnd) {
         serveOrderIndex = (serveOrderIndex - 1) % 4;
     }
-}
-
-
-function withdraw_old() {
-    let curServeEnd = currentScoreSequence.substr(-1, 1);
-    let prevServeEnd = currentScoreSequence.substr(-2, 1);
-    currentScoreSequence = currentScoreSequence.substr(0, currentScoreSequence.length - 1);
-    console.log(curServeEnd, currentScoreSequence);
-
-    if (currentScoreSequence.length == 0) {
-        $withdrawBtn.attr("disabled", true);
-    }
-    let scoreBody;
-    let prevScoreBody;
-    console.log(serveOrderIndex);
-    if (curServeEnd == '0') {
-        scoreBody = $leftScoreBox;
-        if (curServeEnd == prevServeEnd) {
-            prevScoreBody = scoreBody;
-        } else {
-            prevScoreBody = $rightScoreBox;
-            serveOrderIndex = (serveOrderIndex - 1) % 4;
-        }
-    } else {
-        scoreBody = $rightScoreBox;
-        if (curServeEnd == prevServeEnd) {
-            prevScoreBody = scoreBody;
-        } else {
-            prevScoreBody = $leftScoreBox;
-            serveOrderIndex = (serveOrderIndex - 1) % 4;
-        }
-    }
-    console.log(serveOrderIndex);
-    //改变得分
-    let currentScore = parseInt(scoreBody.text()) - 1;
-
-    let prevScore = parseInt(prevScoreBody.text());
-    scoreBody.text(currentScore);
-
-    if (isSingle) {
-        if (curServeEnd == prevServeEnd || (curServeEnd != prevServeEnd && (parseInt($leftScoreBox) + parseInt($rightScoreBox)) % 2 == 0)) {
-            swapRightContent();
-            swapLeftContent();
-        }
-    } else {
-        if (curServeEnd == prevServeEnd) {
-            if (curServeEnd == '1') {
-                swapRightContent();
-            } else {
-                swapLeftContent();
-            }
-        }
-    }
-    //Set rotate style of scoreboard
-    if (scoreBody.css("transform") == "matrix3d(1, 0, 0, 0, 0, 1, -2.44929e-16, 0, 0, 2.44929e-16, 1, 0, 0, 0, 0, 1)" ||
-        scoreBody.css("transform") == "rotateX(360deg)") {
-        scoreBody.css("transform", "");
-    } else {
-        scoreBody.css("transform", "rotateX(360deg)");
-    }
-
-    //Set serve color of scoreboard
-    scoreBody.removeClass("serve-score");
-    prevScoreBody.addClass("serve-score");
-
-    if (isLastGame && ((!finalGame && currentScore == intervalScore - 1) || (finalGame && currentScore == finalInterval - 1)) && changeEnd) {
-        swapCourtEnd();
-        hasChangedEnd = false;
-    }
-
-    rotateServeIcon(prevScore, prevServeEnd);
-    const $singleScore = $scoreScrollPanel.children().eq(currentScoreSequence.length);
-    $singleScore.children().children('p').text("");
-    if ($singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth / 2 >= 0) {
-        // let scrollGap = $singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth;
-        $scoreScrollContainer.animate({
-            scrollLeft: $singleScore[0].offsetLeft - $scoreScrollContainer[0].clientWidth / 2
-        });
+    if (tempStore == "i" || tempStore == 'I') {
+        currentScoreSequence += tempStore;
     }
 }
+
+
 /**
  * 
  * @param {boolean} whenScorePlus 是否在加分
@@ -739,7 +829,6 @@ function finishMatch() {
     var ok = confirm("确定结束该场比赛？");
     if (ok) {
         stopCountUp();
-        inInterval = false;
         let matchInfo = {
             players: {
                 playerA: (isSingle) ? [playerA1, playerA2] : [playerA1],
@@ -752,8 +841,8 @@ function finishMatch() {
 
         localStorage[matchId] = JSON.stringify(matchInfo);
         let matchResult = "比赛结束, 用时:" + matchInfo.time + "\n";
-        matchResult += playerA1.name + (playerA2.name == '' ? "" : ("/" + playerA2.name)) + " VS ";
-        matchResult += playerB1.name + (playerB2.name == '' ? "" : ("/" + playerB2.name)) + "\n";
+        matchResult += playerA1.name + (playerA2.name == "" ? "" : ("/" + playerA2.name)) + " VS ";
+        matchResult += playerB1.name + (playerB2.name == "" ? "" : ("/" + playerB2.name)) + "\n";
         matchResult += matchInfo.matchScores + "\n";
         matchResult += matchInfo.gameScores;
         alert(matchResult);
@@ -839,8 +928,11 @@ function radioProtect(clickId) {
         idSplit[1] = 'serve';
     }
 
-    let newId = '#' + idSplit[0] + '-' + idSplit[1];
+    const newId = '#' + idSplit[0] + '-' + idSplit[1];
     $(newId).prop({ checked: false });
+
+    const anotherId = '#' + ((idSplit[0].substr(-1, 1) == '1') ? idSplit[0].replace('1', '2') : idSplit[0].replace('2', '1')) + '-' + idSplit[1];
+    $(anotherId).prop({ checked: false });
 }
 
 function swapLR() {
@@ -1006,7 +1098,7 @@ function updateServeInfo(updateEnd) {
 /**
  * 交换一方或双方站位及发球方
  */
-function updateCourt(currentServeEnd,prevServeEnd,add = true) {
+function updateCourt(currentServeEnd, prevServeEnd, add = true) {
 
     if (currentServeEnd == prevServeEnd) {
         if (isSingle) {
@@ -1054,30 +1146,36 @@ function updateServeTable(updateEnd, add = true) {
         });
     }
 }
-
-
-
-
-class Player {
-    constructor(name, team) {
-        this.team = team;
-        this.name = name;
-        this.serve = "";
-        this.transparent = "";
-        this.outputHtml = function () {
-            return "<div class='player" + this.transparent + "'><span>" + this.team + "</span><p>" + this.name + "</p></div>";
-        };
+/**
+ * 
+ * @param {boolean} color false为黄色，true为红色
+ */
+function updateServeTableBackground(color, playerIndex, add = true) {
+    let currentTotalScore = currentScoreSequence.replace(/[^0-1]+/g, '').length - 1;
+    const $singleScore = $scoreScrollPanel.children().eq(currentTotalScore);
+    if (add) {
+        currentTotalScore -= 1;
+        if (color) {
+            $singleScore.children().eq(playerIndex).addClass("red-back");
+        } else {
+            $singleScore.children().eq(playerIndex).addClass("yellow-back");
+        }
+    } else {
+        if (color) {
+            $singleScore.children().eq(playerIndex).removeClass("red-back");
+        } else {
+            $singleScore.children().eq(playerIndex).removeClass("yellow-back");
+        }
     }
 
-    /**
-     * @param {String} serveMark
-     */
-    setServe(serveMark) {
-        this.serve = serveMark;
-    }
-
-    setTransparent() {
-        this.transparent = " transparent";
-    }
 }
 
+function toggleEventDlg(flag) {
+    if (flag) {
+        $container.addClass("blur");
+        $eventDlg.removeClass("hidden");
+    } else {
+        $container.removeClass("blur");
+        $eventDlg.addClass("hidden");
+    }
+}
