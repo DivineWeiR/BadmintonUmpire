@@ -1,14 +1,40 @@
 let countDownByMinuteProcess;
 let countDownProcess;
 let countUpProcess;
-function startCountDownBySecond($countDown) {
+
+function startCountDownBySecond(countElementId, stopElementId, seconds) {
+    return new Promise(function (resolve, reject) {
+        const $countDown = $("#" + countElementId);
+        $countDown.text(seconds);
+        const $stopBtn = $("#" + stopElementId);
+        $stopBtn.click(() => {
+            clearInterval(countDownProcess);
+            $(".interval-dlg").hide();
+            $(".container").removeClass("blur");
+            resolve();
+        });
+        countDownProcess = setInterval(() => {
+            seconds--;
+            $countDown.text(seconds);
+            if (seconds == 0) {
+                clearInterval(countDownProcess);
+                $(".interval-dlg").hide();
+                $(".container").removeClass("blur");
+                resolve();
+            }
+        },1000);
+    });
+
+}
+function startCountDownBySecond_old($countDown) {
     let countTime = parseInt($countDown.text());
+
     countDownProcess = setInterval(() => {
         countTime -= 1;
         if (countTime == 0) {
             clearInterval(countDownProcess);
             setTimeout(() => {
-                $(".interval-dlg").hide();
+                // $(".interval-dlg").hide();
                 $(".container").removeClass("blur");
             }, 0);
 
@@ -54,7 +80,7 @@ function resetCountDownBySecond($countDown, countDownSecond = 60) {
     startCountDownBySecond($countDown);
 }
 
-function stopCountDownBySecond($countDown){
+function stopCountDownBySecond($countDown) {
     clearInterval(countDownProcess);
 }
 
@@ -67,7 +93,7 @@ function startCountUp($countUp) {
         let minute = parseInt(gap / 1000 / 60 % 60);
         let hour = parseInt(gap / 1000 / 3600 % 24);
         let day = parseInt(gap / 1000 / 24400);
-        console.log([day,hour,minute,second]);
+        console.log([day, hour, minute, second]);
         $countUp.empty();
         if (day > 0) {
             $countUp.append($("<span></span>").text(day));
@@ -84,6 +110,6 @@ function startCountUp($countUp) {
     }, 1000);
 }
 
-function stopCountUp(){
+function stopCountUp() {
     clearInterval(countUpProcess);
 }

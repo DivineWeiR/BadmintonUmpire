@@ -119,15 +119,12 @@ nav a:hover i {
 
 .game-setting-wrapper {
     font-size: 12px;
-    /* line-height: 14px; */
+    min-height: 12px;
     padding: 0 10px;
     /* z-index: 2; */
     text-align: center;
 }
 
-/* .game-setting-box span {
-    padding: 0 2px;
-} */
 
 .court-box {
     margin: 0 -45px;
@@ -227,7 +224,7 @@ nav a:hover i {
     display: flex;
 }
 
-.match-score p {
+#prev-games-score p {
     padding: 0 2px;
     font-size: 18px;
 }
@@ -309,7 +306,7 @@ h1.serve-score {
 }
 
 .serves {
-    width: 6%;
+    /* width: 6%; */
     position: relative;
 }
 
@@ -433,7 +430,6 @@ h1.serve-score {
     overflow: hidden;
 }
 
-
 .cancel-box a, .cancel-box button {
     font-size: 20px;
     line-height: 50px;
@@ -446,7 +442,7 @@ h1.serve-score {
 
 .cancel-box a:hover i, .cancel-box button:hover i {
     transform: rotate(90deg) scale(1.1);
-    color:#107a43;
+    color: #107a43;
     transition: transform 0.5s;
 }
 
@@ -611,7 +607,7 @@ h1.serve-score {
     height: 4em;
     line-height: 4em;
     background: linear-gradient(to bottom, #FFFFFFCC, #DDDDDD);
-    z-index: 5;
+    z-index: 999;
 }
 
 .bottom-shadow i {
@@ -639,7 +635,7 @@ h1.serve-score {
     color: #FFFFFF;
     display: none;
     transition: transform 0.5s;
-    z-index: 5;
+    z-index: 9999;
 }
 
 .input-wrapper {
@@ -706,6 +702,7 @@ h1.serve-score {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     margin-bottom: 3px;
 }
 
@@ -713,6 +710,10 @@ h1.serve-score {
     line-height: 1em;
     display: flex;
     align-items: center;
+}
+
+.setting-group>div {
+    margin-bottom: 0.5em;
 }
 
 .setting-group label {
@@ -835,11 +836,14 @@ h1.serve-score {
 .serve-col {
     /* width:3em; */
     text-align: center;
+    font-size: 14px;
 }
 
 .receive-col {
     /* width:4em; */
     text-align: center;
+    font-size: 14px;
+    ;
 }
 
 .text-group {

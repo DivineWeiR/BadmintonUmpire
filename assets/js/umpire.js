@@ -85,7 +85,18 @@ function initSettingPanel() {
     $("input[name='game-score']").change(() => {
         $("#score-diy-input").attr("disabled", !$("#score-diy").is(":checked"));
         $("#score-diy-input").attr("required", $("#score-diy").is(":checked"));
+        if (!$("#score-diy").is(":checked")) {
+            let gameScore = parseInt($("#score-diy").is(":checked") ? $("#score-diy-input").val() : $("input[name='game-score']:checked").val());
+            let addOn = Math.floor(gameScore / 2) - 1;
+            $("#max-score").val(gameScore + addOn);
+        }
     });
+
+    $("input[name='score-diy-input']").blur(() => {
+        let gameScore = parseInt($("#score-diy").is(":checked") ? $("#score-diy-input").val() : $("input[name='game-score']:checked").val());
+        let addOn = Math.floor(gameScore / 2) - 1;
+        $("#max-score").val(gameScore + addOn);
+    })
 
     $("input[name='two-win']").change(() => {
         $("#max-score").attr("disabled", !$("#two-win-on").is(":checked"));
@@ -445,7 +456,10 @@ function startNewGame() {
         alert("请选择发接发球员！");
         return;
     }
-
+    $leftScoreBox.text(0);
+    $rightScoreBox.text(0);
+    currentScoreSequence = "";
+    serveOrderIndex = 0;
     if (!matchStart) {
         getMatchOption();
 
@@ -460,12 +474,7 @@ function startNewGame() {
         $prevGamesScore.empty();
         $prevGamesScore.append($("<p></p>").text("0:0"));
     } else {
-        currentGameIndex++;
-
         setPlayerOption();
-        if (changeEnd) {
-            swapCourtEnd();
-        }
     }
     $matchScore.text(currentMatchScore);
 
@@ -666,6 +675,7 @@ function setPlayerOption() {
     for (let i = 1; i <= 2 * maxScore; i++) {
         scrollInnerHtml += "<div class='single-score' id='score-" + i + "'>" + generateScoreTableColumn(scores) + "</div>";
     }
+    scrollToLeft("score-panel");
     $scoreScrollPanel.html(scrollInnerHtml);
 
 
@@ -707,10 +717,9 @@ function scorePlus(scoreEnd) {
         finishGame();
     }
     if (intervalInner && (((!finalGame || !isLastGame) && serveScore == intervalScore && receiveScore < intervalScore) || (finalGame && isLastGame && serveScore == finalInterval && receiveScore < intervalScore))) {
-        resetCountDownBySecond($intervalCountDown, intervalInnerTime);
         $(".interval-dlg").show();
         $(".container").addClass("blur");
-        startCountDownBySecond($intervalCountDown);
+        startCountDownBySecond("interval-count-down", "stop-interval", intervalInnerTime);
     }
 
 
@@ -795,7 +804,10 @@ function swapCourtEnd() {
     $rightScoreBox.text(leftScoreInfo);
 
     currentScoreSequence = reverseScoreSequence(currentScoreSequence);
-
+    totalScoreSequence = reverseScoreSequence(totalScoreSequence);
+    swapGamesScore();
+    currentMatchScore = swapScore(currentMatchScore);
+    $matchScore.text(currentMatchScore);
     const serveEnd = currentScoreSequence.substr(-1, 1);
     return serveEnd;
 }
@@ -815,33 +827,39 @@ function finishGame() {
 
         prevGamesScore += leftScore + ":" + rightScore;
 
-        let newPrevGamesScore = "";
-        $prevGamesScore.empty();
-        for (let gameScore_ of prevGamesScore.split(" ")) {
-            newPrevGamesScore += swapScore(gameScore_) + " ";
-            $prevGamesScore.append($("<p></p>").text(swapScore(gameScore_)));
+        if (changeEnd) {
+            swapGamesScore();
         }
-        prevGamesScore = newPrevGamesScore;
-        if (currentGameIndex % 2 == 1 || isLastGame)
-            currentScoreSequence = reverseScoreSequence(currentScoreSequence);
+        // if (currentGameIndex % 2 == 1 || isLastGame)
+        //     currentScoreSequence = reverseScoreSequence(currentScoreSequence);
         totalScoreSequence += currentScoreSequence + ";";
+
         if (isLastGame) {
-            finishMatch();
+            return finishMatch();
         }
 
         currentGameIndex++;
         if (currentGameIndex + 1 == gameNum) {
-            isLastGame == true;
+            isLastGame = true;
 
         }
 
-        if (intervalBetween && !isLastGame) {
-            resetCountDownBySecond($intervalCountDown, intervalBetweenTime);
+        if (intervalBetween) {
+            // resetCountDownBySecond($intervalCountDown, intervalBetweenTime);
             $(".interval-dlg").show();
-            startCountDownBySecond($intervalCountDown);
-            setTimeout(() => {
+            startCountDownBySecond("interval-count-down", "stop-interval", intervalBetweenTime).then(() => {
+                if (changeEnd) {
+                    totalScoreSequence = reverseScoreSequence(totalScoreSequence);
+                    swapLR();
+                }
                 showPlayerSettingPanelOnly();
-            }, 0);
+            });
+        } else {
+            if (changeEnd) {
+                totalScoreSequence = reverseScoreSequence(totalScoreSequence);
+                swapLR();
+            }
+            showPlayerSettingPanelOnly();
         }
 
     } else {
@@ -941,6 +959,13 @@ function scrollToTop(element) {
     const scrollContent = $("." + element);
     scrollContent.animate({
         scrollTop: 0
+    }, 800);
+}
+
+function scrollToLeft(element) {
+    const scrollContent = $("." + element);
+    scrollContent.animate({
+        scrollLeft: 0
     }, 800);
 }
 
@@ -1050,6 +1075,18 @@ function reverseScoreSequence(scoreSeq) {
     scoreSeq = swapLetter(scoreSeq, 'r', 'R');//Retire
     scoreSeq = swapLetter(scoreSeq, 'd', 'D');//Disqualify
     return scoreSeq;
+}
+
+function swapGamesScore() {
+    let newPrevGamesScore = "";
+    $prevGamesScore.empty();
+    for (let gameScore_ of prevGamesScore.split(" ")) {
+        if (gameScore_.indexOf(":")>=0) {
+            newPrevGamesScore += swapScore(gameScore_) + " ";
+            $prevGamesScore.append($("<p></p>").text(swapScore(gameScore_)));
+        }
+    }
+    prevGamesScore = newPrevGamesScore;
 }
 
 function swapLetter(str, l1, l2) {
