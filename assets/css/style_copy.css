@@ -99,8 +99,13 @@ input {
     text-align: right;
 }
 
-.gray{
-    color:#777777;
+nav a:hover {
+    color: #ECECEC;
+}
+
+nav a:hover i {
+    transition: transform 0.5s;
+    transform: rotate(90deg) scale(1.2);
 }
 
 .serve-box {
