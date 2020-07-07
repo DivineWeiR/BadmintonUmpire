@@ -829,7 +829,7 @@ function finishGame() {
         const rightScore = $rightScoreBox.text();
 
         prevGamesScore += leftScore + ":" + rightScore;
-        
+
         if (netMatchWin > (gameNum / 2) || isLastGame) {
             return finishMatch();
         }
@@ -1149,13 +1149,13 @@ function updateServeInfo(updateEnd) {
     //调整发接法图标
     rotateServeIcon(parseInt(scoreBody.text()), updateEnd);
 
-    //设置发球板翻页动画
-    if (scoreBody.css("transform") == "matrix3d(1, 0, 0, 0, 0, 1, -2.44929e-16, 0, 0, 2.44929e-16, 1, 0, 0, 0, 0, 1)" ||
-        scoreBody.css("transform") == "rotateX(360deg)") {
-        scoreBody.css("transform", "");
-    } else {
-        scoreBody.css("transform", "rotateX(360deg)");
-    }
+    //设置发球板翻页动画，现在用css动画实现，删除该部分
+    // if (scoreBody.css("transform") == "matrix3d(1, 0, 0, 0, 0, 1, -2.44929e-16, 0, 0, 2.44929e-16, 1, 0, 0, 0, 0, 1)" ||
+    //     scoreBody.css("transform") == "rotateX(360deg)") {
+    //     scoreBody.css("transform", "");
+    // } else {
+    //     scoreBody.css("transform", "rotateX(360deg)");
+    // }
 }
 
 /**

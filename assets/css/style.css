@@ -238,10 +238,12 @@ h1.score {
     width: 40%;
     color: #FFFFFF;
     transition: all 0.8s;
+    background:#1c9255;
 }
 
 h1.serve-score {
     color: #ff9148;
+    animation: scoreBoardRotate 0.8s linear;
 }
 
 .game-index {
@@ -987,5 +989,14 @@ h1.serve-score {
     }
     50% {
         transform: translateY(5px);
+    }
+}
+
+@keyframes scoreBoardRotate{
+    from{
+        transform: rotateX(0);
+    }
+    to{
+        transform: rotateX(360deg);
     }
 }
