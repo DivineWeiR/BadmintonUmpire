@@ -66,8 +66,13 @@ const $rightScoreBox = $("#right-score");
 const $intervalCountDown = $("#interval-count-down");
 
 window.onload = function () {
+    $(".operation-box").height($(window).height()-$(".info-box").height()+"px");
     initSettingPanel();
     initMainPanel();
+}
+
+window.onresize = function(){
+    $(".operation-box").height($(window).height()-$(".info-box").height()+"px");
 }
 
 function initSettingPanel() {

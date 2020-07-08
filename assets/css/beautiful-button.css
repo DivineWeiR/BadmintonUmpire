@@ -3,6 +3,9 @@
     --button-color:#49c083;
 }
 
+input[type="button"],input[type="radio"],input[type="checkbox"] {
+    outline: none;
+}
 input[type="checkbox"] {
     display: none;
 }
