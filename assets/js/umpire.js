@@ -445,7 +445,7 @@ function initMainPanel() {
         radioProtect(this.id);
     });
 
-    $("#change-end").click(() => {
+    $("#exchange").click(() => {
         swapLR();
     });
     $("#start-game").click(() => {
@@ -809,9 +809,11 @@ function swapCourtEnd() {
     $leftScoreBox.text(rightScoreInfo);
     $rightScoreBox.text(leftScoreInfo);
 
+    swapPlayers();
+
     currentScoreSequence = reverseScoreSequence(currentScoreSequence);
     totalScoreSequence = reverseScoreSequence(totalScoreSequence);
-    swapGamesScore();
+    prevGamesScore = swapGamesScore(prevGamesScore);
     currentMatchScore = swapScore(currentMatchScore);
     $matchScore.text(currentMatchScore);
     const serveEnd = currentScoreSequence.substr(-1, 1);
@@ -840,7 +842,7 @@ function finishGame() {
         }
 
         if (changeEnd) {
-            swapGamesScore();
+            prevGamesScore = swapGamesScore(prevGamesScore);
             currentMatchScore = swapScore(currentMatchScore);
         }
 
@@ -878,6 +880,12 @@ function finishMatch() {
     var ok = confirm("确定结束该场比赛？");
     if (ok) {
         stopCountUp();
+        if(currentMatchScore.split(':').reduce((x,y)=>(x-y))<0){
+            swapPlayers();
+            prevGamesScore = swapGamesScore(prevGamesScore);
+            currentMatchScore = swapScore(currentMatchScore);
+        }
+        
         let matchInfo = {
             players: {
                 playerA: (isSingle) ? [playerA1, playerA2] : [playerA1],
@@ -1084,16 +1092,16 @@ function reverseScoreSequence(scoreSeq) {
     return scoreSeq;
 }
 
-function swapGamesScore() {
+function swapGamesScore(gamesScore) {
     let newPrevGamesScore = "";
     $prevGamesScore.empty();
-    for (let gameScore_ of prevGamesScore.split(" ")) {
+    for (let gameScore_ of gamesScore.split(" ")) {
         if (gameScore_.indexOf(":") >= 0) {
             newPrevGamesScore += swapScore(gameScore_) + " ";
             $prevGamesScore.append($("<p></p>").text(swapScore(gameScore_)));
         }
     }
-    prevGamesScore = newPrevGamesScore;
+    return newPrevGamesScore;
 }
 
 function swapLetter(str, l1, l2) {
@@ -1246,4 +1254,12 @@ function toggleEventDlg(flag) {
         $container.removeClass("blur");
         $eventDlg.addClass("hidden");
     }
+}
+
+function swapPlayers(){
+    const playerTemp1 = playerA1,playerTemp2 = playerA2;
+    playerA1 = playerB1;
+    playerA2 = playerB2;
+    playerB1 = playerTemp1;
+    playerB2 = playerTemp2;
 }

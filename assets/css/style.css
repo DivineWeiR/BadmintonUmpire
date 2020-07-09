@@ -94,14 +94,14 @@ input {
     position: absolute;
 }
 
-.info-box::before{
-    content:"";
+.info-box::before {
+    content: "";
     background-color: #EEEEEE;
-    width:40px;
-    height:40px;
+    width: 40px;
+    height: 40px;
     position: absolute;
-    right:0;
-    bottom:0;
+    right: 0;
+    bottom: 0;
     z-index: -1;
 }
 
@@ -113,8 +113,8 @@ input {
     text-align: right;
 }
 
-.gray{
-    color:#777777;
+.gray {
+    color: #777777;
 }
 
 .serve-box {
@@ -133,7 +133,6 @@ input {
     /* z-index: 2; */
     text-align: center;
 }
-
 
 .court-box {
     margin: 0 -45px;
@@ -252,7 +251,7 @@ h1.score {
     width: 40%;
     color: #FFFFFF;
     transition: all 0.8s;
-    background:#1c9255;
+    background: #1c9255;
 }
 
 h1.serve-score {
@@ -283,31 +282,32 @@ h1.serve-score {
     background: #EEEEEE;
     /* margin-top: -40px; */
     border-top-left-radius: 40px;
-    padding:0 5vw;
+    padding: 0 5vw;
     /* border-top-right-radius: 40px; */
     bottom: 0;
     position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    width:100%;
+    width: 100%;
     box-sizing: border-box;
 }
-.operation-box::before{
-    content:"";
+
+.operation-box::before {
+    content: "";
     background-color: #1c9255;
-    width:40px;
-    height:50px;
+    width: 40px;
+    height: 50px;
     position: absolute;
-    left:0;
-    top:-10px;
+    left: 0;
+    top: -10px;
     z-index: -1;
 }
 
 .score-table {
     display: flex;
     /* margin: 1em -5vw; */
-    margin:0 -5vw;
+    margin: 0 -5vw;
     position: relative;
 }
 
@@ -665,7 +665,8 @@ h1.serve-score {
     transition: transform 0.5s;
     z-index: 9999;
 }
-.scroll-top i:hover{
+
+.scroll-top i:hover {
     animation: moveTop 0.5s infinite;
 }
 
@@ -779,11 +780,12 @@ h1.serve-score {
     width: 2em !important;
 }
 
-.next-btn-box, .prev-btn-box{
+.next-btn-box, .prev-btn-box {
     display: flex;
     margin: 20px 0;
 }
-.btn-box{
+
+.btn-box {
     display: flex;
 }
 
@@ -898,15 +900,13 @@ h1.serve-score {
 }
 
 #counter {
-    margin-top: 1em;
-    margin-bottom: 2em;
-    margin: auto;
+    margin: 1em auto 2em;
     width: 60%;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: baseline;
-    background: #c5f8de;
+    /* background: #c5f8de; */
 }
 
 .interval-count-down {
@@ -915,10 +915,15 @@ h1.serve-score {
     font-family: digit;
     text-align: right;
     position: relative;
+    transform: scaleY(1.5);
 }
 
 .interval-count-down {
     padding: 0 10px;
+}
+
+#prev-games-score {
+    min-height: 1em;
 }
 
 @media (max-width: 599px) {
@@ -964,6 +969,7 @@ h1.serve-score {
         height: calc(80vh - 70px);
     }
 }
+
 /* @media (max-width: 599px) {
     .operation-box{
         min-height: 190px;
@@ -992,8 +998,8 @@ h1.serve-score {
     }
 }
 
-@media (max-height:600px){
-    .container{
+@media (max-height:600px) {
+    .container {
         overflow: auto;
     }
 }
@@ -1044,11 +1050,11 @@ h1.serve-score {
     }
 }
 
-@keyframes scoreBoardRotate{
-    from{
+@keyframes scoreBoardRotate {
+    from {
         transform: rotateX(0);
     }
-    to{
+    to {
         transform: rotateX(360deg);
     }
 }
