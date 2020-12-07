@@ -8,11 +8,20 @@
     padding: 0;
 }
 
-html, body {
+:root {
+    --green-bgcolor: linear-gradient(45deg, #1c9255, #5de68f);
+    --gray-bgcolor: linear-gradient(45deg, #fdfbfb 0%, #ebedee 100%);
+    /* --darkblue-bgcolor: linear-gradient(45deg, #1e3c72 0%, #1e3c72 1%, #2a5298 100%); */
+    --darkblue-bgcolor: linear-gradient(45deg, #96fbc4 0%, #f9f586 100%);
+}
+
+html,
+body {
     height: 100%;
     width: 100%;
     margin: auto;
-    /* background: #EEEEEE; */
+    /* background: #eeeeee;
+background: var(--gray-bgcolor);; */
     transition: 0.5s;
 }
 
@@ -50,7 +59,7 @@ input {
     width: 100%;
     height: 100%;
     padding: 0 45px 60px;
-    color: #EEE;
+    color: #eee;
     /* height: 70vh; */
     box-sizing: border-box;
     display: flex;
@@ -68,12 +77,12 @@ input {
 .cover-box a {
     text-decoration: none;
     margin-top: 40px;
-    background: #ECECEC;
+    background: #ececec;
     color: #107a43;
 }
 
 .cover-box a:hover {
-    background: #FFFFFF;
+    background: #ffffff;
     font-weight: bold;
     transition: 0.2s;
 }
@@ -85,9 +94,10 @@ input {
 
 .info-box {
     background: #1c9255;
+    background: var(--green-bgcolor);
     width: 100%;
     padding: 0 45px;
-    color: #EEE;
+    color: #eee;
     /* height: 65vh; */
     box-sizing: border-box;
     border-bottom-right-radius: 40px;
@@ -96,7 +106,7 @@ input {
 
 .info-box::before {
     content: "";
-    background-color: #EEEEEE;
+    background-color: #ebedee;
     width: 40px;
     height: 40px;
     position: absolute;
@@ -109,7 +119,7 @@ input {
     height: 5vh;
     line-height: 5vh;
     font-size: 3vh;
-    color: #FFFFFF;
+    color: #ffffff;
     text-align: right;
 }
 
@@ -136,7 +146,7 @@ input {
 
 .court-box {
     margin: 0 -45px;
-    background-image: url('../image/badminton-court-flat.svg');
+    background-image: url("../image/badminton-court-flat.svg");
     background-size: cover;
     height: 24vh;
     background-position: center;
@@ -155,7 +165,8 @@ input {
     position: absolute;
 }
 
-.court #left-player, .court #right-player {
+.court #left-player,
+.court #right-player {
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -183,11 +194,13 @@ input {
 .player span {
     width: 100%;
     display: block;
-    border: #EEEEEE 2px solid;
-    background: #1F4A99;
+    /* border: #eeeeee 2px solid; */
+    background: #1f4a99;
+    background: var(--darkblue-bgcolor);
     border-radius: 10px;
     box-sizing: border-box;
-    box-shadow: 0 5px 10px #333333;
+    color: #333;
+    box-shadow: 0 2px 4px #333333;
 }
 
 .player p {
@@ -211,7 +224,7 @@ input {
     height: 2em;
     line-height: 2em;
     text-align: center;
-    background: #ECECEC;
+    background: #ececec;
     box-shadow: 0 0 10px #333333;
     border-radius: 50%;
     color: #000000;
@@ -249,9 +262,10 @@ h1.score {
     font-size: 3.5em;
     line-height: 1em;
     width: 40%;
-    color: #FFFFFF;
+    color: #ffffff;
     transition: all 0.8s;
-    background: #1c9255;
+    /* background: #1c9255;
+    background: var(--green-bgcolor); */
 }
 
 h1.serve-score {
@@ -279,7 +293,8 @@ h1.serve-score {
 }
 
 .operation-box {
-    background: #EEEEEE;
+    background: #eeeeee;
+    background: var(--gray-bgcolor);
     /* margin-top: -40px; */
     border-top-left-radius: 40px;
     padding: 0 5vw;
@@ -311,7 +326,8 @@ h1.serve-score {
     position: relative;
 }
 
-.p1-line, .p2-line {
+.p1-line,
+.p2-line {
     border: #333333 1px solid;
     border-bottom: none;
     border-left: none;
@@ -321,16 +337,18 @@ h1.serve-score {
     text-align: center;
 }
 
-.players .p2-line:last-child, .serves .p2-line:last-child, .single-score .p2-line:last-child {
+.players .p2-line:last-child,
+.serves .p2-line:last-child,
+.single-score .p2-line:last-child {
     border-bottom: #333333 1px solid;
 }
 
 .p1-line {
-    background: #FFFFFF;
+    background: #ffffff;
 }
 
 .p2-line {
-    background: #BBBBBB;
+    background: #bbbbbb;
 }
 
 .serves {
@@ -399,7 +417,8 @@ h1.serve-score {
 .btn {
     font-size: 20px;
     background: #1c9255;
-    color: #ECECEC;
+    /* background: var(--green-bgcolor); */
+    color: #ececec;
     border: none;
     width: 5em;
     height: 1.8em;
@@ -415,7 +434,7 @@ h1.serve-score {
 }
 
 .btn:disabled {
-    background: #CCCCCC;
+    background: #cccccc;
 }
 
 .blur {
@@ -433,15 +452,18 @@ h1.serve-score {
     opacity: 0;
 }
 
-.event-dlg, .input-container, .interval-dlg {
+.event-dlg,
+.input-container,
+.interval-dlg {
     height: 100%;
     width: 100%;
     position: absolute;
     z-index: 3;
 }
 
-.dlg, .input-box {
-    background: #FCFCFC;
+.dlg,
+.input-box {
+    background: #fcfcfc;
     width: 400px;
     /* height: 70vh; */
     position: absolute;
@@ -458,7 +480,8 @@ h1.serve-score {
     overflow: hidden;
 }
 
-.cancel-box a, .cancel-box button {
+.cancel-box a,
+.cancel-box button {
     font-size: 20px;
     line-height: 50px;
     padding-right: 20px;
@@ -468,7 +491,8 @@ h1.serve-score {
     padding-right: 0;
 }
 
-.cancel-box a:hover i, .cancel-box button:hover i {
+.cancel-box a:hover i,
+.cancel-box button:hover i {
     transform: rotate(90deg) scale(1.1);
     color: #107a43;
     transition: transform 0.5s;
@@ -485,8 +509,8 @@ h1.serve-score {
 .event-operation h3 {
     position: absolute;
     top: 0;
-    transform: translateY( -50%);
-    background: #FCFCFC;
+    transform: translateY(-50%);
+    background: #fcfcfc;
     padding: 0 0.5em;
 }
 
@@ -499,7 +523,7 @@ h1.serve-score {
 .event-operation .btn {
     margin: 0 0;
     font-size: 14px;
-    background: #FFFFFF;
+    background: #ffffff;
     border: #1c9255 1px solid;
     color: #333333;
     box-shadow: 2px 2px 2px #33333333;
@@ -512,7 +536,7 @@ h1.serve-score {
 }
 
 .event-operation button:hover {
-    background: #CCCCCC;
+    background: #cccccc;
 }
 
 .injure-panel {
@@ -557,8 +581,8 @@ h1.serve-score {
     border-radius: 5px;
     padding: 0.2em 1em;
     background: #999999;
-    color: #EEEEEE;
-    text-shadow: 0 0 2px #EEEEEE;
+    color: #eeeeee;
+    text-shadow: 0 0 2px #eeeeee;
 }
 
 .time-panel span {
@@ -570,9 +594,9 @@ h1.serve-score {
 }
 
 .injure-stop:disabled {
-    background-color: #DDDDDD;
+    background-color: #dddddd;
     color: #999999;
-    border-color: #AAAAAA;
+    border-color: #aaaaaa;
 }
 
 .injure-stop:disabled i {
@@ -588,7 +612,8 @@ h1.serve-score {
     margin-top: -20px;
 }
 
-.cancel-box h1, .interval-dlg h1 {
+.cancel-box h1,
+.interval-dlg h1 {
     font-size: 1.5em;
     color: #107a43;
 }
@@ -621,7 +646,9 @@ h1.serve-score {
     color: #111111;
 }
 
-.yellow-card, .red-card, .black-card {
+.yellow-card,
+.red-card,
+.black-card {
     transform: scaleY(1.2);
 }
 
@@ -634,7 +661,7 @@ h1.serve-score {
     width: 100%;
     height: 4em;
     line-height: 4em;
-    background: linear-gradient(to bottom, #FFFFFFCC, #DDDDDD);
+    background: linear-gradient(to bottom, #ffffffcc, #dddddd);
     z-index: 999;
 }
 
@@ -660,7 +687,7 @@ h1.serve-score {
     border-radius: 20px;
     box-shadow: 0 0 10px #333333;
     background: #107a43;
-    color: #FFFFFF;
+    color: #ffffff;
     display: none;
     transition: transform 0.5s;
     z-index: 9999;
@@ -687,16 +714,19 @@ h1.serve-score {
     text-align: center;
 }
 
-.setting-item, .player-setting-item {
+.setting-item,
+.player-setting-item {
     margin-bottom: 10px;
 }
 
-.setting-item h2, .player-setting-item h2 {
+.setting-item h2,
+.player-setting-item h2 {
     font-size: 18px;
     color: #777;
 }
 
-.setting-item h2 span, .setting-item h2 div {
+.setting-item h2 span,
+.setting-item h2 div {
     margin-left: 5px;
     font-size: 10px;
 }
@@ -707,7 +737,7 @@ h1.serve-score {
 
 .hint {
     background: #777777;
-    color: #FFFFFF;
+    color: #ffffff;
     padding: 0.2em 0.5em;
     border-radius: 5px;
     position: relative;
@@ -725,7 +755,7 @@ h1.serve-score {
     z-index: -1;
 }
 
-.setting-item h2+div {
+.setting-item h2 + div {
     padding-top: 5px;
 }
 
@@ -744,7 +774,7 @@ h1.serve-score {
     align-items: center;
 }
 
-.setting-group>div {
+.setting-group > div {
     margin-bottom: 0.5em;
 }
 
@@ -780,7 +810,8 @@ h1.serve-score {
     width: 2em !important;
 }
 
-.next-btn-box, .prev-btn-box {
+.next-btn-box,
+.prev-btn-box {
     display: flex;
     margin: 20px 0;
 }
@@ -801,7 +832,8 @@ h1.serve-score {
     justify-content: center;
 }
 
-#next-btn, #prev-btn {
+#next-btn,
+#prev-btn {
     background: none;
     border: none;
     color: #107a43;
@@ -812,13 +844,15 @@ h1.serve-score {
     align-items: center;
 }
 
-#next-btn i, #prev-btn i {
+#next-btn i,
+#prev-btn i {
     margin: 0 10px;
     font-size: 20px;
     line-height: 20px;
 }
 
-#next-btn:hover, #prev-btn:hover {
+#next-btn:hover,
+#prev-btn:hover {
     transition: all 0.5s;
 }
 
@@ -845,7 +879,7 @@ h1.serve-score {
 .player-setting-item h2 {
     margin-top: -20px;
     margin-bottom: 10px;
-    background: #FCFCFC;
+    background: #fcfcfc;
     width: 4em;
     text-align: center;
 }
@@ -879,7 +913,6 @@ h1.serve-score {
     /* width:4em; */
     text-align: center;
     font-size: 14px;
-    ;
 }
 
 .text-group {
@@ -977,7 +1010,7 @@ h1.serve-score {
     }
 } */
 
-@media (min-width:600px) {
+@media (min-width: 600px) {
     .operation-box {
         border: solid 1px;
     }
@@ -987,7 +1020,8 @@ h1.serve-score {
     .input-wrapper {
         padding: 0 40px;
     }
-    .info-box, .operation-box {
+    .info-box,
+    .operation-box {
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
@@ -998,15 +1032,16 @@ h1.serve-score {
     }
 }
 
-@media (max-height:600px) {
+@media (max-height: 600px) {
     .container {
         overflow: auto;
     }
 }
 
 @keyframes blink {
-    0%, 100% {
-        text-shadow: 0 0 2px #ECECEC;
+    0%,
+    100% {
+        text-shadow: 0 0 2px #ececec;
     }
     50% {
         color: transparent;
@@ -1015,7 +1050,8 @@ h1.serve-score {
 }
 
 @keyframes moveRight {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(0);
     }
     50% {
@@ -1024,7 +1060,8 @@ h1.serve-score {
 }
 
 @keyframes moveLeft {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(0);
     }
     50% {
@@ -1033,7 +1070,8 @@ h1.serve-score {
 }
 
 @keyframes moveTop {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(0);
     }
     50% {
@@ -1042,7 +1080,8 @@ h1.serve-score {
 }
 
 @keyframes moveBottom {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateX(0);
     }
     50% {
